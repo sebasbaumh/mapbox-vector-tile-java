@@ -1,8 +1,11 @@
-
 # MapBox Vector Tile - Java
 
 This project allows encoding and decoding of MapBox Vector Tiles (MVT).  
 It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.
+
+The API differs a bit from [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) with the main point being a different namespace (`io.github.sebasbaumh.mapbox.vectortile`) as publishing a project to Maven Central requires to own that namespace.
+
+---
 
 [![Build Status](https://travis-ci.org/wdtinc/mapbox-vector-tile-java.svg?branch=master)](https://travis-ci.org/wdtinc/mapbox-vector-tile-java)
 
@@ -264,7 +267,7 @@ protoc --java_out=src/main/java src/main/resources/vector_tile.proto
 These options were added to the .proto file:
 
  * syntax = "proto2";
- * option java_package = "com.wdtinc.mapbox_vector_tile";
+ * option java_package = "io.github.sebasbaumh.mapbox.vectortile";
  * option java_outer_classname = "VectorTile";
 
 ## Issues
