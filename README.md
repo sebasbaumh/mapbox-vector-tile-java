@@ -1,6 +1,9 @@
 
 # MapBox Vector Tile - Java
 
+This project allows encoding and decoding of MapBox Vector Tiles (MVT).  
+It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.
+
 [![Build Status](https://travis-ci.org/wdtinc/mapbox-vector-tile-java.svg?branch=master)](https://travis-ci.org/wdtinc/mapbox-vector-tile-java)
 
 Contents
