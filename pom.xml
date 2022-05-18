@@ -4,14 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wdtinc</groupId>
+	<groupId>io.github.sebasbaumh</groupId>
     <artifactId>mapbox-vector-tile</artifactId>
-    <version>3.1.1</version>
+	<!-- version for release -->
+    <version>22.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Mapbox Vector Tiles - Java</name>
     <description>Mapbox Vector Tile Support for Java.</description>
-    <url>https://github.com/wdtinc/mapbox-vector-tile-java</url>
+    <url>https://github.com/sebasbaumh/mapbox-vector-tile-java</url>
 
     <licenses>
         <license>
@@ -23,18 +24,17 @@
 
     <developers>
         <developer>
-            <id>nhunter</id>
-            <organization>Weather Decision Technologies, Inc.</organization>
-            <organizationUrl>http://wdtinc.com/</organizationUrl>
-            <name>Nicholas Hunter</name>
-            <url>https://github.com/ShibaBandit</url>
+			<name>Sebastian Baumhekel</name>
+			<email>sebastian.baumhekel@gmail.com</email>
+			<url>https://github.com/sebasbaumh</url>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/wdtinc/mapbox-vector-tile-java.git</connection>
-        <developerConnection>scm:git:ssh://github.com:wdtinc/mapbox-vector-tile-java.git</developerConnection>
-        <url>https://github.com/wdtinc/mapbox-vector-tile-java</url>
+        <connection>scm:git:git://github.com/sebasbaumh/mapbox-vector-tile-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com:sebasbaumh/mapbox-vector-tile-java.git</developerConnection>
+        <url>https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/main</url>
+		<tag>HEAD</tag>
     </scm>
 	<!-- Sonatype repository -->
     <distributionManagement>
