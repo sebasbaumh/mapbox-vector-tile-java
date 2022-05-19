@@ -1,5 +1,15 @@
 # MapBox Vector Tile - Java
 
+[![CodeQL](https://github.com/sebasbaumh/mapbox-vector-tile-java/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/sebasbaumh/mapbox-vector-tile-java/actions/workflows/codeql-analysis.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.sebasbaumh/mapbox-vector-tile-java)](https://search.maven.org/artifact/io.github.sebasbaumh/mapbox-vector-tile-java)
+[![javadoc](https://javadoc.io/badge2/io.github.sebasbaumh/mapbox-vector-tile-java/javadoc.svg)](https://javadoc.io/doc/io.github.sebasbaumh/mapbox-vector-tile-java/latest/index.html)
+[![License](https://img.shields.io/github/license/sebasbaumh/mapbox-vector-tile-java.svg)](https://github.com/sebasbaumh/mapbox-vector-tile-java/blob/master/LICENSE)
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sebasbaumh_mapbox-vector-tile-java&metric=ncloc)](https://sonarcloud.io/dashboard?id=sebasbaumh_mapbox-vector-tile-java)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sebasbaumh_mapbox-vector-tile-java&metric=security_rating)](https://sonarcloud.io/dashboard?id=sebasbaumh_mapbox-vector-tile-java)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=sebasbaumh_mapbox-vector-tile-java&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=sebasbaumh_mapbox-vector-tile-java)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=sebasbaumh_mapbox-vector-tile-java&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=sebasbaumh_mapbox-vector-tile-java)
+
 This project allows encoding and decoding of MapBox Vector Tiles (MVT).  
 It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.
 
