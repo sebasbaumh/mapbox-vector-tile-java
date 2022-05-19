@@ -44,11 +44,11 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 
 ### Gradle
 
-Latest version using JTS 15 with android API level 15 support:
-
 ```
 compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.0.1'
 ```
+
+## Overview
 
 The version reflects the year of the release, e.g. `22.0.0` is a version released in 2022.
 
