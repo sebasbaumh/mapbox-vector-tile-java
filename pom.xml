@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.sebasbaumh</groupId>
-	<artifactId>mapbox-vector-tile</artifactId>
+	<artifactId>mapbox-vector-tile-java</artifactId>
 	<!-- version for release -->
 	<version>22.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>

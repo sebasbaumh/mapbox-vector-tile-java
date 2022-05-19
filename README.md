@@ -11,24 +11,43 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=sebasbaumh_mapbox-vector-tile-java&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=sebasbaumh_mapbox-vector-tile-java)
 
 This project allows encoding and decoding of MapBox Vector Tiles (MVT).  
-It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.
+*It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.*
 
-**Project goals and improvements:**
+## Project goals and improvements:
+* protoc generated model for Mapbox Vector Tiles v2.1.
+* Provides MVT encoding through use of the Java Topology Suite (JTS).
 * All dependencies were upgraded to their latest version (including JTS)
 * Pull requests from the original source were integrated ([52](https://github.com/wdtinc/mapbox-vector-tile-java/pull/52) and [53](https://github.com/wdtinc/mapbox-vector-tile-java/pull/53))
 * Clean up code and small optimizations
 * Support for JDK 11+
 * The license is still Apache-2.0
 
+### See also:
+
+ * https://www.mapbox.com/vector-tiles/specification/ for overview of the MVT spec.
+ * https://github.com/mapbox/vector-tile-spec/tree/master/2.1 for details on the MVT spec.
+ * https://developers.google.com/protocol-buffers/ for details on protoc.
+ * https://projects.eclipse.org/projects/locationtech.jts for details on JTS.
+
+
 ## How to use it ##
+### Maven
 There is a Maven artifact in the official Maven repository, so just add this to your Maven POM:
 
 ```xml
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
-	<artifactId>mapbox-vector-tile</artifactId>
-	<version>22.0.0</version>
+	<artifactId>mapbox-vector-tile-java</artifactId>
+	<version>22.0.1</version>
 </dependency>
+```
+
+### Gradle
+
+Latest version using JTS 15 with android API level 15 support:
+
+```
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.0.1'
 ```
 
 The version reflects the year of the release, e.g. `22.0.0` is a version released in 2022.
@@ -52,57 +71,6 @@ Contents
 - [License](#license)
 
 ## Overview
-
-Provides:
-
- * protoc generated model for Mapbox Vector Tiles v2.1.
- * Provides MVT encoding through use of the Java Topology Suite (JTS).
- * Android API level 15 compatibility (as of version 3.0.0).
-
-See:
-
- * https://www.mapbox.com/vector-tiles/specification/ for overview of the MVT spec.
- * https://github.com/mapbox/vector-tile-spec/tree/master/2.1 for details on the MVT spec.
- * https://developers.google.com/protocol-buffers/ for details on protoc.
- * https://projects.eclipse.org/projects/locationtech.jts for details on JTS.
-
-### Dependency
-
-#### Maven
-
-Latest version using JTS 15 with android API level 15 support:
-
-```xml
-<dependency>
-    <groupId>io.github.sebasbaumh</groupId>
-    <artifactId>mapbox-vector-tile</artifactId>
-    <version>3.1.1</version>
-</dependency>
-```
-
-JTS 14 with no android support:
-
-```xml
-<dependency>
-    <groupId>io.github.sebasbaumh</groupId>
-    <artifactId>mapbox-vector-tile</artifactId>
-    <version>2.0.0</version>
-</dependency>
-```
-
-#### Gradle
-
-Latest version using JTS 15 with android API level 15 support:
-
-```
-compile 'io.github.sebasbaumh:mapbox-vector-tile:3.1.1'
-```
-
-JTS 14 with no android support:
-
-```
-compile 'io.github.sebasbaumh:mapbox-vector-tile:2.0.0'
-```
 
 ### Reading MVTs
 
