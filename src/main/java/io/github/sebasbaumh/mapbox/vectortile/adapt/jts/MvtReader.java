@@ -455,7 +455,7 @@ public final class MvtReader
 
 		// Classify rings
 		final List<Polygon> polygons = ringClassifier.classifyRings(rings, geomFactory);
-		if (polygons.size() < 1)
+		if (polygons.isEmpty())
 		{
 			return null;
 
