@@ -51,9 +51,6 @@
 	<properties>
 		<!-- encoding for resource files -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- sonarcloud integration -->
-		<sonar.organization>sebasbaumh</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
     <dependencies>
