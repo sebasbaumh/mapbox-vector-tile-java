@@ -6,7 +6,7 @@ package io.github.sebasbaumh.mapbox.vectortile;
 public final class VectorTile {
   private VectorTile() {}
   public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
+      @SuppressWarnings("unused") com.google.protobuf.ExtensionRegistryLite registry) {
   }
 
   public static void registerAllExtensions(
@@ -120,7 +120,8 @@ public final class VectorTile {
       return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    @Override
+	protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
       return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -172,7 +173,8 @@ public final class VectorTile {
       public static final int POLYGON_VALUE = 3;
 
 
-      public final int getNumber() {
+      @Override
+	public final int getNumber() {
         return value;
       }
 
@@ -201,16 +203,19 @@ public final class VectorTile {
       private static final com.google.protobuf.Internal.EnumLiteMap<
           GeomType> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<GeomType>() {
-            public GeomType findValueByNumber(int number) {
+            @Override
+			public GeomType findValueByNumber(int number) {
               return GeomType.forNumber(number);
             }
           };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+      @Override
+	public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
+      @Override
+	public final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptorForType() {
         return getDescriptor();
       }
@@ -365,7 +370,6 @@ public final class VectorTile {
         if (extensionRegistry == null) {
           throw new java.lang.NullPointerException();
         }
-        int mutable_bitField0_ = 0;
         com.google.protobuf.UnknownFieldSet.Builder unknownFields =
             com.google.protobuf.UnknownFieldSet.newBuilder();
         try {
@@ -436,7 +440,8 @@ public final class VectorTile {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Value_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+	protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Value_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -453,7 +458,8 @@ public final class VectorTile {
        *
        * <code>optional string string_value = 1;</code>
        */
-      public boolean hasStringValue() {
+      @Override
+	public boolean hasStringValue() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
@@ -463,7 +469,8 @@ public final class VectorTile {
        *
        * <code>optional string string_value = 1;</code>
        */
-      public java.lang.String getStringValue() {
+      @Override
+	public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
@@ -484,7 +491,8 @@ public final class VectorTile {
        *
        * <code>optional string string_value = 1;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+	public com.google.protobuf.ByteString
       getStringValueBytes() {
         java.lang.Object ref = stringValue_;
         if (ref instanceof java.lang.String) {
@@ -503,13 +511,15 @@ public final class VectorTile {
       /**
        * <code>optional float float_value = 2;</code>
        */
-      public boolean hasFloatValue() {
+      @Override
+	public boolean hasFloatValue() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional float float_value = 2;</code>
        */
-      public float getFloatValue() {
+      @Override
+	public float getFloatValue() {
         return floatValue_;
       }
 
@@ -518,13 +528,15 @@ public final class VectorTile {
       /**
        * <code>optional double double_value = 3;</code>
        */
-      public boolean hasDoubleValue() {
+      @Override
+	public boolean hasDoubleValue() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional double double_value = 3;</code>
        */
-      public double getDoubleValue() {
+      @Override
+	public double getDoubleValue() {
         return doubleValue_;
       }
 
@@ -533,13 +545,15 @@ public final class VectorTile {
       /**
        * <code>optional int64 int_value = 4;</code>
        */
-      public boolean hasIntValue() {
+      @Override
+	public boolean hasIntValue() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>optional int64 int_value = 4;</code>
        */
-      public long getIntValue() {
+      @Override
+	public long getIntValue() {
         return intValue_;
       }
 
@@ -548,13 +562,15 @@ public final class VectorTile {
       /**
        * <code>optional uint64 uint_value = 5;</code>
        */
-      public boolean hasUintValue() {
+      @Override
+	public boolean hasUintValue() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>optional uint64 uint_value = 5;</code>
        */
-      public long getUintValue() {
+      @Override
+	public long getUintValue() {
         return uintValue_;
       }
 
@@ -563,13 +579,15 @@ public final class VectorTile {
       /**
        * <code>optional sint64 sint_value = 6;</code>
        */
-      public boolean hasSintValue() {
+      @Override
+	public boolean hasSintValue() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
        * <code>optional sint64 sint_value = 6;</code>
        */
-      public long getSintValue() {
+      @Override
+	public long getSintValue() {
         return sintValue_;
       }
 
@@ -578,18 +596,21 @@ public final class VectorTile {
       /**
        * <code>optional bool bool_value = 7;</code>
        */
-      public boolean hasBoolValue() {
+      @Override
+	public boolean hasBoolValue() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
        * <code>optional bool bool_value = 7;</code>
        */
-      public boolean getBoolValue() {
+      @Override
+	public boolean getBoolValue() {
         return boolValue_;
       }
 
       private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
+      @Override
+	public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
         if (isInitialized == 0) return false;
@@ -602,7 +623,8 @@ public final class VectorTile {
         return true;
       }
 
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
+      @Override
+	public void writeTo(com.google.protobuf.CodedOutputStream output)
           throws java.io.IOException {
         com.google.protobuf.GeneratedMessageV3
             .ExtendableMessage<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value>.ExtensionWriter
@@ -632,7 +654,8 @@ public final class VectorTile {
         unknownFields.writeTo(output);
       }
 
-      public int getSerializedSize() {
+      @Override
+	public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
 
@@ -726,7 +749,8 @@ public final class VectorTile {
         return result;
       }
 
-      @java.lang.Override
+      @SuppressWarnings("unchecked")
+	@java.lang.Override
       public int hashCode() {
         if (memoizedHashCode != 0) {
           return memoizedHashCode;
@@ -843,14 +867,16 @@ public final class VectorTile {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public Builder newBuilderForType() { return newBuilder(); }
+      @Override
+	public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
       public static Builder newBuilder(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
-      public Builder toBuilder() {
+      @Override
+	public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
       }
@@ -879,7 +905,8 @@ public final class VectorTile {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Value_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        @Override
+		protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Value_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
@@ -896,12 +923,13 @@ public final class VectorTile {
           super(parent);
           maybeForceBuilderInitialization();
         }
-        private void maybeForceBuilderInitialization() {
+        private static void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
           }
         }
-        public Builder clear() {
+        @Override
+		public Builder clear() {
           super.clear();
           stringValue_ = "";
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -920,16 +948,19 @@ public final class VectorTile {
           return this;
         }
 
-        public com.google.protobuf.Descriptors.Descriptor
+        @Override
+		public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Value_descriptor;
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getDefaultInstanceForType() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getDefaultInstanceForType() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value.getDefaultInstance();
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value build() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value build() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
@@ -937,7 +968,8 @@ public final class VectorTile {
           return result;
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value buildPartial() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value buildPartial() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value result = new io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
@@ -974,56 +1006,68 @@ public final class VectorTile {
           return result;
         }
 
-        public Builder clone() {
-          return (Builder) super.clone();
+        @Override
+		public Builder clone() {
+          return super.clone();
         }
-        public Builder setField(
+        @Override
+		public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
-          return (Builder) super.setField(field, value);
+          return super.setField(field, value);
         }
-        public Builder clearField(
+        @Override
+		public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return (Builder) super.clearField(field);
+          return super.clearField(field);
         }
-        public Builder clearOneof(
+        @Override
+		public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return (Builder) super.clearOneof(oneof);
+          return super.clearOneof(oneof);
         }
-        public Builder setRepeatedField(
+        @Override
+		public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
-          return (Builder) super.setRepeatedField(field, index, value);
+          return super.setRepeatedField(field, index, value);
         }
-        public Builder addRepeatedField(
+        @Override
+		public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
-          return (Builder) super.addRepeatedField(field, value);
+          return super.addRepeatedField(field, value);
         }
-        public <Type> Builder setExtension(
+        @Override
+		public <Type> Builder setExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value, Type> extension,
             Type value) {
-          return (Builder) super.setExtension(extension, value);
+          return super.setExtension(extension, value);
         }
-        public <Type> Builder setExtension(
+        @Override
+		public <Type> Builder setExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value, java.util.List<Type>> extension,
             int index, Type value) {
-          return (Builder) super.setExtension(extension, index, value);
+          return super.setExtension(extension, index, value);
         }
-        public <Type> Builder addExtension(
+        @Override
+		public <Type> Builder addExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value, java.util.List<Type>> extension,
             Type value) {
-          return (Builder) super.addExtension(extension, value);
+          return super.addExtension(extension, value);
         }
-        public <Type> Builder clearExtension(
+        @SuppressWarnings("unused")
+		@Override
+		public <Type> Builder clearExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value, ?> extension) {
-          return (Builder) super.clearExtension(extension);
+          return super.clearExtension(extension);
         }
-        public Builder mergeFrom(com.google.protobuf.Message other) {
+        @Override
+		public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value) {
             return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value)other);
           } else {
@@ -1063,14 +1107,16 @@ public final class VectorTile {
           return this;
         }
 
-        public final boolean isInitialized() {
+        @Override
+		public final boolean isInitialized() {
           if (!extensionsAreInitialized()) {
             return false;
           }
           return true;
         }
 
-        public Builder mergeFrom(
+        @Override
+		public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
@@ -1097,7 +1143,8 @@ public final class VectorTile {
          *
          * <code>optional string string_value = 1;</code>
          */
-        public boolean hasStringValue() {
+        @Override
+		public boolean hasStringValue() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
@@ -1107,7 +1154,8 @@ public final class VectorTile {
          *
          * <code>optional string string_value = 1;</code>
          */
-        public java.lang.String getStringValue() {
+        @Override
+		public java.lang.String getStringValue() {
           java.lang.Object ref = stringValue_;
           if (!(ref instanceof java.lang.String)) {
             com.google.protobuf.ByteString bs =
@@ -1128,7 +1176,8 @@ public final class VectorTile {
          *
          * <code>optional string string_value = 1;</code>
          */
-        public com.google.protobuf.ByteString
+        @Override
+		public com.google.protobuf.ByteString
         getStringValueBytes() {
           java.lang.Object ref = stringValue_;
           if (ref instanceof String) {
@@ -1193,13 +1242,15 @@ public final class VectorTile {
         /**
          * <code>optional float float_value = 2;</code>
          */
-        public boolean hasFloatValue() {
+        @Override
+		public boolean hasFloatValue() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         /**
          * <code>optional float float_value = 2;</code>
          */
-        public float getFloatValue() {
+        @Override
+		public float getFloatValue() {
           return floatValue_;
         }
         /**
@@ -1225,13 +1276,15 @@ public final class VectorTile {
         /**
          * <code>optional double double_value = 3;</code>
          */
-        public boolean hasDoubleValue() {
+        @Override
+		public boolean hasDoubleValue() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
          * <code>optional double double_value = 3;</code>
          */
-        public double getDoubleValue() {
+        @Override
+		public double getDoubleValue() {
           return doubleValue_;
         }
         /**
@@ -1257,13 +1310,15 @@ public final class VectorTile {
         /**
          * <code>optional int64 int_value = 4;</code>
          */
-        public boolean hasIntValue() {
+        @Override
+		public boolean hasIntValue() {
           return ((bitField0_ & 0x00000008) == 0x00000008);
         }
         /**
          * <code>optional int64 int_value = 4;</code>
          */
-        public long getIntValue() {
+        @Override
+		public long getIntValue() {
           return intValue_;
         }
         /**
@@ -1289,13 +1344,15 @@ public final class VectorTile {
         /**
          * <code>optional uint64 uint_value = 5;</code>
          */
-        public boolean hasUintValue() {
+        @Override
+		public boolean hasUintValue() {
           return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         /**
          * <code>optional uint64 uint_value = 5;</code>
          */
-        public long getUintValue() {
+        @Override
+		public long getUintValue() {
           return uintValue_;
         }
         /**
@@ -1321,13 +1378,15 @@ public final class VectorTile {
         /**
          * <code>optional sint64 sint_value = 6;</code>
          */
-        public boolean hasSintValue() {
+        @Override
+		public boolean hasSintValue() {
           return ((bitField0_ & 0x00000020) == 0x00000020);
         }
         /**
          * <code>optional sint64 sint_value = 6;</code>
          */
-        public long getSintValue() {
+        @Override
+		public long getSintValue() {
           return sintValue_;
         }
         /**
@@ -1353,13 +1412,15 @@ public final class VectorTile {
         /**
          * <code>optional bool bool_value = 7;</code>
          */
-        public boolean hasBoolValue() {
+        @Override
+		public boolean hasBoolValue() {
           return ((bitField0_ & 0x00000040) == 0x00000040);
         }
         /**
          * <code>optional bool bool_value = 7;</code>
          */
-        public boolean getBoolValue() {
+        @Override
+		public boolean getBoolValue() {
           return boolValue_;
         }
         /**
@@ -1380,12 +1441,14 @@ public final class VectorTile {
           onChanged();
           return this;
         }
-        public final Builder setUnknownFields(
+        @Override
+		public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
-        public final Builder mergeUnknownFields(
+        @Override
+		public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
         }
@@ -1406,7 +1469,8 @@ public final class VectorTile {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Value>
           PARSER = new com.google.protobuf.AbstractParser<Value>() {
-        public Value parsePartialFrom(
+        @Override
+		public Value parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1423,7 +1487,8 @@ public final class VectorTile {
         return PARSER;
       }
 
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getDefaultInstanceForType() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
@@ -1659,7 +1724,8 @@ public final class VectorTile {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Feature_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+	protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Feature_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1672,13 +1738,15 @@ public final class VectorTile {
       /**
        * <code>optional uint64 id = 1 [default = 0];</code>
        */
-      public boolean hasId() {
+      @Override
+	public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>optional uint64 id = 1 [default = 0];</code>
        */
-      public long getId() {
+      @Override
+	public long getId() {
         return id_;
       }
 
@@ -1694,7 +1762,8 @@ public final class VectorTile {
        *
        * <code>repeated uint32 tags = 2 [packed = true];</code>
        */
-      public java.util.List<java.lang.Integer>
+      @Override
+	public java.util.List<java.lang.Integer>
       getTagsList() {
         return tags_;
       }
@@ -1708,7 +1777,8 @@ public final class VectorTile {
        *
        * <code>repeated uint32 tags = 2 [packed = true];</code>
        */
-      public int getTagsCount() {
+      @Override
+	public int getTagsCount() {
         return tags_.size();
       }
       /**
@@ -1721,7 +1791,8 @@ public final class VectorTile {
        *
        * <code>repeated uint32 tags = 2 [packed = true];</code>
        */
-      public int getTags(int index) {
+      @Override
+	public int getTags(int index) {
         return tags_.get(index);
       }
       private int tagsMemoizedSerializedSize = -1;
@@ -1735,7 +1806,8 @@ public final class VectorTile {
        *
        * <code>optional .vectortile.Tile.GeomType type = 3 [default = UNKNOWN];</code>
        */
-      public boolean hasType() {
+      @Override
+	public boolean hasType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
@@ -1745,7 +1817,8 @@ public final class VectorTile {
        *
        * <code>optional .vectortile.Tile.GeomType type = 3 [default = UNKNOWN];</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType getType() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType getType() {
         io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType result = io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType.valueOf(type_);
         return result == null ? io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType.UNKNOWN : result;
       }
@@ -1761,7 +1834,8 @@ public final class VectorTile {
        *
        * <code>repeated uint32 geometry = 4 [packed = true];</code>
        */
-      public java.util.List<java.lang.Integer>
+      @Override
+	public java.util.List<java.lang.Integer>
       getGeometryList() {
         return geometry_;
       }
@@ -1774,7 +1848,8 @@ public final class VectorTile {
        *
        * <code>repeated uint32 geometry = 4 [packed = true];</code>
        */
-      public int getGeometryCount() {
+      @Override
+	public int getGeometryCount() {
         return geometry_.size();
       }
       /**
@@ -1786,13 +1861,15 @@ public final class VectorTile {
        *
        * <code>repeated uint32 geometry = 4 [packed = true];</code>
        */
-      public int getGeometry(int index) {
+      @Override
+	public int getGeometry(int index) {
         return geometry_.get(index);
       }
       private int geometryMemoizedSerializedSize = -1;
 
       private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
+      @Override
+	public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
         if (isInitialized == 0) return false;
@@ -1801,7 +1878,8 @@ public final class VectorTile {
         return true;
       }
 
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
+      @Override
+	public void writeTo(com.google.protobuf.CodedOutputStream output)
           throws java.io.IOException {
         getSerializedSize();
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1827,7 +1905,8 @@ public final class VectorTile {
         unknownFields.writeTo(output);
       }
 
-      public int getSerializedSize() {
+      @Override
+	public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
 
@@ -2000,14 +2079,16 @@ public final class VectorTile {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public Builder newBuilderForType() { return newBuilder(); }
+      @Override
+	public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
       public static Builder newBuilder(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
-      public Builder toBuilder() {
+      @Override
+	public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
       }
@@ -2034,7 +2115,8 @@ public final class VectorTile {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Feature_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        @Override
+		protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Feature_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
@@ -2056,7 +2138,8 @@ public final class VectorTile {
               .alwaysUseFieldBuilders) {
           }
         }
-        public Builder clear() {
+        @Override
+		public Builder clear() {
           super.clear();
           id_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -2069,16 +2152,19 @@ public final class VectorTile {
           return this;
         }
 
-        public com.google.protobuf.Descriptors.Descriptor
+        @Override
+		public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Feature_descriptor;
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getDefaultInstanceForType() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getDefaultInstanceForType() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature.getDefaultInstance();
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature build() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature build() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
@@ -2086,7 +2172,8 @@ public final class VectorTile {
           return result;
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature buildPartial() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature buildPartial() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature result = new io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
@@ -2113,33 +2200,40 @@ public final class VectorTile {
           return result;
         }
 
-        public Builder clone() {
-          return (Builder) super.clone();
+        @Override
+		public Builder clone() {
+          return super.clone();
         }
-        public Builder setField(
+        @Override
+		public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
-          return (Builder) super.setField(field, value);
+          return super.setField(field, value);
         }
-        public Builder clearField(
+        @Override
+		public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return (Builder) super.clearField(field);
+          return super.clearField(field);
         }
-        public Builder clearOneof(
+        @Override
+		public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return (Builder) super.clearOneof(oneof);
+          return super.clearOneof(oneof);
         }
-        public Builder setRepeatedField(
+        @Override
+		public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
-          return (Builder) super.setRepeatedField(field, index, value);
+          return super.setRepeatedField(field, index, value);
         }
-        public Builder addRepeatedField(
+        @Override
+		public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
-          return (Builder) super.addRepeatedField(field, value);
+          return super.addRepeatedField(field, value);
         }
-        public Builder mergeFrom(com.google.protobuf.Message other) {
+        @Override
+		public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature) {
             return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature)other);
           } else {
@@ -2181,11 +2275,13 @@ public final class VectorTile {
           return this;
         }
 
-        public final boolean isInitialized() {
+        @Override
+		public final boolean isInitialized() {
           return true;
         }
 
-        public Builder mergeFrom(
+        @Override
+		public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
@@ -2208,13 +2304,15 @@ public final class VectorTile {
         /**
          * <code>optional uint64 id = 1 [default = 0];</code>
          */
-        public boolean hasId() {
+        @Override
+		public boolean hasId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
          * <code>optional uint64 id = 1 [default = 0];</code>
          */
-        public long getId() {
+        @Override
+		public long getId() {
           return id_;
         }
         /**
@@ -2253,7 +2351,8 @@ public final class VectorTile {
          *
          * <code>repeated uint32 tags = 2 [packed = true];</code>
          */
-        public java.util.List<java.lang.Integer>
+        @Override
+		public java.util.List<java.lang.Integer>
         getTagsList() {
           return java.util.Collections.unmodifiableList(tags_);
         }
@@ -2267,7 +2366,8 @@ public final class VectorTile {
          *
          * <code>repeated uint32 tags = 2 [packed = true];</code>
          */
-        public int getTagsCount() {
+        @Override
+		public int getTagsCount() {
           return tags_.size();
         }
         /**
@@ -2280,7 +2380,8 @@ public final class VectorTile {
          *
          * <code>repeated uint32 tags = 2 [packed = true];</code>
          */
-        public int getTags(int index) {
+        @Override
+		public int getTags(int index) {
           return tags_.get(index);
         }
         /**
@@ -2359,7 +2460,8 @@ public final class VectorTile {
          *
          * <code>optional .vectortile.Tile.GeomType type = 3 [default = UNKNOWN];</code>
          */
-        public boolean hasType() {
+        @Override
+		public boolean hasType() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
@@ -2369,7 +2471,8 @@ public final class VectorTile {
          *
          * <code>optional .vectortile.Tile.GeomType type = 3 [default = UNKNOWN];</code>
          */
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType getType() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType getType() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType result = io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType.valueOf(type_);
           return result == null ? io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType.UNKNOWN : result;
         }
@@ -2419,7 +2522,8 @@ public final class VectorTile {
          *
          * <code>repeated uint32 geometry = 4 [packed = true];</code>
          */
-        public java.util.List<java.lang.Integer>
+        @Override
+		public java.util.List<java.lang.Integer>
         getGeometryList() {
           return java.util.Collections.unmodifiableList(geometry_);
         }
@@ -2432,7 +2536,8 @@ public final class VectorTile {
          *
          * <code>repeated uint32 geometry = 4 [packed = true];</code>
          */
-        public int getGeometryCount() {
+        @Override
+		public int getGeometryCount() {
           return geometry_.size();
         }
         /**
@@ -2444,7 +2549,8 @@ public final class VectorTile {
          *
          * <code>repeated uint32 geometry = 4 [packed = true];</code>
          */
-        public int getGeometry(int index) {
+        @Override
+		public int getGeometry(int index) {
           return geometry_.get(index);
         }
         /**
@@ -2510,12 +2616,14 @@ public final class VectorTile {
           onChanged();
           return this;
         }
-        public final Builder setUnknownFields(
+        @Override
+		public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
-        public final Builder mergeUnknownFields(
+        @Override
+		public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
         }
@@ -2536,7 +2644,8 @@ public final class VectorTile {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Feature>
           PARSER = new com.google.protobuf.AbstractParser<Feature>() {
-        public Feature parsePartialFrom(
+        @Override
+		public Feature parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2553,7 +2662,8 @@ public final class VectorTile {
         return PARSER;
       }
 
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getDefaultInstanceForType() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
@@ -2869,7 +2979,8 @@ public final class VectorTile {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Layer_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+	protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Layer_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2889,7 +3000,8 @@ public final class VectorTile {
        *
        * <code>required uint32 version = 15 [default = 1];</code>
        */
-      public boolean hasVersion() {
+      @Override
+	public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
@@ -2902,7 +3014,8 @@ public final class VectorTile {
        *
        * <code>required uint32 version = 15 [default = 1];</code>
        */
-      public int getVersion() {
+      @Override
+	public int getVersion() {
         return version_;
       }
 
@@ -2911,13 +3024,15 @@ public final class VectorTile {
       /**
        * <code>required string name = 1;</code>
        */
-      public boolean hasName() {
+      @Override
+	public boolean hasName() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required string name = 1;</code>
        */
-      public java.lang.String getName() {
+      @Override
+	public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
@@ -2934,7 +3049,8 @@ public final class VectorTile {
       /**
        * <code>required string name = 1;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+	public com.google.protobuf.ByteString
       getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof java.lang.String) {
@@ -2957,7 +3073,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Feature features = 2;</code>
        */
-      public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature> getFeaturesList() {
+      @Override
+	public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature> getFeaturesList() {
         return features_;
       }
       /**
@@ -2967,7 +3084,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Feature features = 2;</code>
        */
-      public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder>
+      @Override
+	public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder>
       getFeaturesOrBuilderList() {
         return features_;
       }
@@ -2978,7 +3096,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Feature features = 2;</code>
        */
-      public int getFeaturesCount() {
+      @Override
+	public int getFeaturesCount() {
         return features_.size();
       }
       /**
@@ -2988,7 +3107,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Feature features = 2;</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getFeatures(int index) {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getFeatures(int index) {
         return features_.get(index);
       }
       /**
@@ -2998,7 +3118,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Feature features = 2;</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder getFeaturesOrBuilder(
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder getFeaturesOrBuilder(
           int index) {
         return features_.get(index);
       }
@@ -3012,7 +3133,8 @@ public final class VectorTile {
        *
        * <code>repeated string keys = 3;</code>
        */
-      public com.google.protobuf.ProtocolStringList
+      @Override
+	public com.google.protobuf.ProtocolStringList
       getKeysList() {
         return keys_;
       }
@@ -3023,7 +3145,8 @@ public final class VectorTile {
        *
        * <code>repeated string keys = 3;</code>
        */
-      public int getKeysCount() {
+      @Override
+	public int getKeysCount() {
         return keys_.size();
       }
       /**
@@ -3033,7 +3156,8 @@ public final class VectorTile {
        *
        * <code>repeated string keys = 3;</code>
        */
-      public java.lang.String getKeys(int index) {
+      @Override
+	public java.lang.String getKeys(int index) {
         return keys_.get(index);
       }
       /**
@@ -3043,7 +3167,8 @@ public final class VectorTile {
        *
        * <code>repeated string keys = 3;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+	public com.google.protobuf.ByteString
       getKeysBytes(int index) {
         return keys_.getByteString(index);
       }
@@ -3057,7 +3182,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Value values = 4;</code>
        */
-      public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value> getValuesList() {
+      @Override
+	public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value> getValuesList() {
         return values_;
       }
       /**
@@ -3067,7 +3193,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Value values = 4;</code>
        */
-      public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder>
+      @Override
+	public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder>
       getValuesOrBuilderList() {
         return values_;
       }
@@ -3078,7 +3205,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Value values = 4;</code>
        */
-      public int getValuesCount() {
+      @Override
+	public int getValuesCount() {
         return values_.size();
       }
       /**
@@ -3088,7 +3216,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Value values = 4;</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getValues(int index) {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getValues(int index) {
         return values_.get(index);
       }
       /**
@@ -3098,7 +3227,8 @@ public final class VectorTile {
        *
        * <code>repeated .vectortile.Tile.Value values = 4;</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder getValuesOrBuilder(
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder getValuesOrBuilder(
           int index) {
         return values_.get(index);
       }
@@ -3113,7 +3243,8 @@ public final class VectorTile {
        *
        * <code>optional uint32 extent = 5 [default = 4096];</code>
        */
-      public boolean hasExtent() {
+      @Override
+	public boolean hasExtent() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
@@ -3124,12 +3255,14 @@ public final class VectorTile {
        *
        * <code>optional uint32 extent = 5 [default = 4096];</code>
        */
-      public int getExtent() {
+      @Override
+	public int getExtent() {
         return extent_;
       }
 
       private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
+      @Override
+	public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
         if (isInitialized == 0) return false;
@@ -3156,7 +3289,8 @@ public final class VectorTile {
         return true;
       }
 
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
+      @Override
+	public void writeTo(com.google.protobuf.CodedOutputStream output)
           throws java.io.IOException {
         com.google.protobuf.GeneratedMessageV3
             .ExtendableMessage<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer>.ExtensionWriter
@@ -3183,7 +3317,8 @@ public final class VectorTile {
         unknownFields.writeTo(output);
       }
 
-      public int getSerializedSize() {
+      @Override
+	public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
 
@@ -3366,14 +3501,16 @@ public final class VectorTile {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public Builder newBuilderForType() { return newBuilder(); }
+      @Override
+	public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
       public static Builder newBuilder(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
-      public Builder toBuilder() {
+      @Override
+	public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
       }
@@ -3401,7 +3538,8 @@ public final class VectorTile {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Layer_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        @Override
+		protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Layer_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
@@ -3425,7 +3563,8 @@ public final class VectorTile {
             getValuesFieldBuilder();
           }
         }
-        public Builder clear() {
+        @Override
+		public Builder clear() {
           super.clear();
           version_ = 1;
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -3450,16 +3589,19 @@ public final class VectorTile {
           return this;
         }
 
-        public com.google.protobuf.Descriptors.Descriptor
+        @Override
+		public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_Layer_descriptor;
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getDefaultInstanceForType() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getDefaultInstanceForType() {
           return io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.getDefaultInstance();
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer build() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer build() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
@@ -3467,7 +3609,8 @@ public final class VectorTile {
           return result;
         }
 
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer buildPartial() {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer buildPartial() {
           io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer result = new io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
@@ -3511,56 +3654,67 @@ public final class VectorTile {
           return result;
         }
 
-        public Builder clone() {
-          return (Builder) super.clone();
+        @Override
+		public Builder clone() {
+          return super.clone();
         }
-        public Builder setField(
+        @Override
+		public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
-          return (Builder) super.setField(field, value);
+          return super.setField(field, value);
         }
-        public Builder clearField(
+        @Override
+		public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
-          return (Builder) super.clearField(field);
+          return super.clearField(field);
         }
-        public Builder clearOneof(
+        @Override
+		public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-          return (Builder) super.clearOneof(oneof);
+          return super.clearOneof(oneof);
         }
-        public Builder setRepeatedField(
+        @Override
+		public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
-          return (Builder) super.setRepeatedField(field, index, value);
+          return super.setRepeatedField(field, index, value);
         }
-        public Builder addRepeatedField(
+        @Override
+		public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
-          return (Builder) super.addRepeatedField(field, value);
+          return super.addRepeatedField(field, value);
         }
-        public <Type> Builder setExtension(
+        @Override
+		public <Type> Builder setExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer, Type> extension,
             Type value) {
-          return (Builder) super.setExtension(extension, value);
+          return super.setExtension(extension, value);
         }
-        public <Type> Builder setExtension(
+        @Override
+		public <Type> Builder setExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer, java.util.List<Type>> extension,
             int index, Type value) {
-          return (Builder) super.setExtension(extension, index, value);
+          return super.setExtension(extension, index, value);
         }
-        public <Type> Builder addExtension(
+        @Override
+		public <Type> Builder addExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer, java.util.List<Type>> extension,
             Type value) {
-          return (Builder) super.addExtension(extension, value);
+          return super.addExtension(extension, value);
         }
-        public <Type> Builder clearExtension(
+        @Override
+		public <Type> Builder clearExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer, ?> extension) {
-          return (Builder) super.clearExtension(extension);
+          return super.clearExtension(extension);
         }
-        public Builder mergeFrom(com.google.protobuf.Message other) {
+        @Override
+		public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer) {
             return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer)other);
           } else {
@@ -3650,7 +3804,8 @@ public final class VectorTile {
           return this;
         }
 
-        public final boolean isInitialized() {
+        @Override
+		public final boolean isInitialized() {
           if (!hasVersion()) {
             return false;
           }
@@ -3668,7 +3823,8 @@ public final class VectorTile {
           return true;
         }
 
-        public Builder mergeFrom(
+        @Override
+		public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
@@ -3698,7 +3854,8 @@ public final class VectorTile {
          *
          * <code>required uint32 version = 15 [default = 1];</code>
          */
-        public boolean hasVersion() {
+        @Override
+		public boolean hasVersion() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
@@ -3711,7 +3868,8 @@ public final class VectorTile {
          *
          * <code>required uint32 version = 15 [default = 1];</code>
          */
-        public int getVersion() {
+        @Override
+		public int getVersion() {
           return version_;
         }
         /**
@@ -3751,13 +3909,15 @@ public final class VectorTile {
         /**
          * <code>required string name = 1;</code>
          */
-        public boolean hasName() {
+        @Override
+		public boolean hasName() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         /**
          * <code>required string name = 1;</code>
          */
-        public java.lang.String getName() {
+        @Override
+		public java.lang.String getName() {
           java.lang.Object ref = name_;
           if (!(ref instanceof java.lang.String)) {
             com.google.protobuf.ByteString bs =
@@ -3774,7 +3934,8 @@ public final class VectorTile {
         /**
          * <code>required string name = 1;</code>
          */
-        public com.google.protobuf.ByteString
+        @Override
+		public com.google.protobuf.ByteString
         getNameBytes() {
           java.lang.Object ref = name_;
           if (ref instanceof String) {
@@ -3842,7 +4003,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Feature features = 2;</code>
          */
-        public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature> getFeaturesList() {
+        @Override
+		public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature> getFeaturesList() {
           if (featuresBuilder_ == null) {
             return java.util.Collections.unmodifiableList(features_);
           } else {
@@ -3856,7 +4018,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Feature features = 2;</code>
          */
-        public int getFeaturesCount() {
+        @Override
+		public int getFeaturesCount() {
           if (featuresBuilder_ == null) {
             return features_.size();
           } else {
@@ -3870,7 +4033,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Feature features = 2;</code>
          */
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getFeatures(int index) {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature getFeatures(int index) {
           if (featuresBuilder_ == null) {
             return features_.get(index);
           } else {
@@ -4064,7 +4228,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Feature features = 2;</code>
          */
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder getFeaturesOrBuilder(
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder getFeaturesOrBuilder(
             int index) {
           if (featuresBuilder_ == null) {
             return features_.get(index);  } else {
@@ -4078,7 +4243,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Feature features = 2;</code>
          */
-        public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder>
+        @Override
+		public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.FeatureOrBuilder>
         getFeaturesOrBuilderList() {
           if (featuresBuilder_ != null) {
             return featuresBuilder_.getMessageOrBuilderList();
@@ -4149,7 +4315,8 @@ public final class VectorTile {
          *
          * <code>repeated string keys = 3;</code>
          */
-        public com.google.protobuf.ProtocolStringList
+        @Override
+		public com.google.protobuf.ProtocolStringList
         getKeysList() {
           return keys_.getUnmodifiableView();
         }
@@ -4160,7 +4327,8 @@ public final class VectorTile {
          *
          * <code>repeated string keys = 3;</code>
          */
-        public int getKeysCount() {
+        @Override
+		public int getKeysCount() {
           return keys_.size();
         }
         /**
@@ -4170,7 +4338,8 @@ public final class VectorTile {
          *
          * <code>repeated string keys = 3;</code>
          */
-        public java.lang.String getKeys(int index) {
+        @Override
+		public java.lang.String getKeys(int index) {
           return keys_.get(index);
         }
         /**
@@ -4180,7 +4349,8 @@ public final class VectorTile {
          *
          * <code>repeated string keys = 3;</code>
          */
-        public com.google.protobuf.ByteString
+        @Override
+		public com.google.protobuf.ByteString
         getKeysBytes(int index) {
           return keys_.getByteString(index);
         }
@@ -4283,7 +4453,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Value values = 4;</code>
          */
-        public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value> getValuesList() {
+        @Override
+		public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value> getValuesList() {
           if (valuesBuilder_ == null) {
             return java.util.Collections.unmodifiableList(values_);
           } else {
@@ -4297,7 +4468,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Value values = 4;</code>
          */
-        public int getValuesCount() {
+        @Override
+		public int getValuesCount() {
           if (valuesBuilder_ == null) {
             return values_.size();
           } else {
@@ -4311,7 +4483,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Value values = 4;</code>
          */
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getValues(int index) {
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value getValues(int index) {
           if (valuesBuilder_ == null) {
             return values_.get(index);
           } else {
@@ -4505,7 +4678,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Value values = 4;</code>
          */
-        public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder getValuesOrBuilder(
+        @Override
+		public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder getValuesOrBuilder(
             int index) {
           if (valuesBuilder_ == null) {
             return values_.get(index);  } else {
@@ -4519,7 +4693,8 @@ public final class VectorTile {
          *
          * <code>repeated .vectortile.Tile.Value values = 4;</code>
          */
-        public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder>
+        @Override
+		public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.ValueOrBuilder>
         getValuesOrBuilderList() {
           if (valuesBuilder_ != null) {
             return valuesBuilder_.getMessageOrBuilderList();
@@ -4585,7 +4760,8 @@ public final class VectorTile {
          *
          * <code>optional uint32 extent = 5 [default = 4096];</code>
          */
-        public boolean hasExtent() {
+        @Override
+		public boolean hasExtent() {
           return ((bitField0_ & 0x00000020) == 0x00000020);
         }
         /**
@@ -4596,7 +4772,8 @@ public final class VectorTile {
          *
          * <code>optional uint32 extent = 5 [default = 4096];</code>
          */
-        public int getExtent() {
+        @Override
+		public int getExtent() {
           return extent_;
         }
         /**
@@ -4627,12 +4804,14 @@ public final class VectorTile {
           onChanged();
           return this;
         }
-        public final Builder setUnknownFields(
+        @Override
+		public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
-        public final Builder mergeUnknownFields(
+        @Override
+		public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
         }
@@ -4653,7 +4832,8 @@ public final class VectorTile {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Layer>
           PARSER = new com.google.protobuf.AbstractParser<Layer>() {
-        public Layer parsePartialFrom(
+        @Override
+		public Layer parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
@@ -4670,7 +4850,8 @@ public final class VectorTile {
         return PARSER;
       }
 
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getDefaultInstanceForType() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
 
@@ -4681,38 +4862,44 @@ public final class VectorTile {
     /**
      * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
      */
-    public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer> getLayersList() {
+    @Override
+	public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer> getLayersList() {
       return layers_;
     }
     /**
      * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
      */
-    public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder>
+    @Override
+	public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder>
     getLayersOrBuilderList() {
       return layers_;
     }
     /**
      * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
      */
-    public int getLayersCount() {
+    @Override
+	public int getLayersCount() {
       return layers_.size();
     }
     /**
      * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
      */
-    public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getLayers(int index) {
+    @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getLayers(int index) {
       return layers_.get(index);
     }
     /**
      * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
      */
-    public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder getLayersOrBuilder(
+    @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder getLayersOrBuilder(
         int index) {
       return layers_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
+    @Override
+	public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -4731,7 +4918,8 @@ public final class VectorTile {
       return true;
     }
 
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
+    @Override
+	public void writeTo(com.google.protobuf.CodedOutputStream output)
         throws java.io.IOException {
       com.google.protobuf.GeneratedMessageV3
           .ExtendableMessage<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile>.ExtensionWriter
@@ -4743,7 +4931,8 @@ public final class VectorTile {
       unknownFields.writeTo(output);
     }
 
-    public int getSerializedSize() {
+    @Override
+	public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
 
@@ -4864,14 +5053,16 @@ public final class VectorTile {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public Builder newBuilderForType() { return newBuilder(); }
+    @Override
+	public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
     public static Builder newBuilder(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
+    @Override
+	public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
     }
@@ -4895,7 +5086,8 @@ public final class VectorTile {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      @Override
+	protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -4918,7 +5110,8 @@ public final class VectorTile {
           getLayersFieldBuilder();
         }
       }
-      public Builder clear() {
+      @Override
+	public Builder clear() {
         super.clear();
         if (layersBuilder_ == null) {
           layers_ = java.util.Collections.emptyList();
@@ -4929,16 +5122,19 @@ public final class VectorTile {
         return this;
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
+      @Override
+	public com.google.protobuf.Descriptors.Descriptor
       getDescriptorForType() {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.internal_static_vectortile_Tile_descriptor;
       }
 
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile getDefaultInstanceForType() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile getDefaultInstanceForType() {
         return io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.getDefaultInstance();
       }
 
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile build() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile build() {
         io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -4946,7 +5142,8 @@ public final class VectorTile {
         return result;
       }
 
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile buildPartial() {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile buildPartial() {
         io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile result = new io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile(this);
         int from_bitField0_ = bitField0_;
         if (layersBuilder_ == null) {
@@ -4962,56 +5159,67 @@ public final class VectorTile {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
+      @Override
+	public Builder clone() {
+        return super.clone();
       }
-      public Builder setField(
+      @Override
+	public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
-        return (Builder) super.setField(field, value);
+        return super.setField(field, value);
       }
-      public Builder clearField(
+      @Override
+	public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
+        return super.clearField(field);
       }
-      public Builder clearOneof(
+      @Override
+	public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
+        return super.clearOneof(oneof);
       }
-      public Builder setRepeatedField(
+      @Override
+	public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
+        return super.setRepeatedField(field, index, value);
       }
-      public Builder addRepeatedField(
+      @Override
+	public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
+        return super.addRepeatedField(field, value);
       }
-      public <Type> Builder setExtension(
+      @Override
+	public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile, Type> extension,
           Type value) {
-        return (Builder) super.setExtension(extension, value);
+        return super.setExtension(extension, value);
       }
-      public <Type> Builder setExtension(
+      @Override
+	public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile, java.util.List<Type>> extension,
           int index, Type value) {
-        return (Builder) super.setExtension(extension, index, value);
+        return super.setExtension(extension, index, value);
       }
-      public <Type> Builder addExtension(
+      @Override
+	public <Type> Builder addExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile, java.util.List<Type>> extension,
           Type value) {
-        return (Builder) super.addExtension(extension, value);
+        return super.addExtension(extension, value);
       }
-      public <Type> Builder clearExtension(
+      @Override
+	public <Type> Builder clearExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile, ?> extension) {
-        return (Builder) super.clearExtension(extension);
+        return super.clearExtension(extension);
       }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
+      @Override
+	public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile) {
           return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile)other);
         } else {
@@ -5054,7 +5262,8 @@ public final class VectorTile {
         return this;
       }
 
-      public final boolean isInitialized() {
+      @Override
+	public final boolean isInitialized() {
         for (int i = 0; i < getLayersCount(); i++) {
           if (!getLayers(i).isInitialized()) {
             return false;
@@ -5066,7 +5275,8 @@ public final class VectorTile {
         return true;
       }
 
-      public Builder mergeFrom(
+      @Override
+	public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -5100,7 +5310,8 @@ public final class VectorTile {
       /**
        * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
        */
-      public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer> getLayersList() {
+      @Override
+	public java.util.List<io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer> getLayersList() {
         if (layersBuilder_ == null) {
           return java.util.Collections.unmodifiableList(layers_);
         } else {
@@ -5110,7 +5321,8 @@ public final class VectorTile {
       /**
        * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
        */
-      public int getLayersCount() {
+      @Override
+	public int getLayersCount() {
         if (layersBuilder_ == null) {
           return layers_.size();
         } else {
@@ -5120,7 +5332,8 @@ public final class VectorTile {
       /**
        * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getLayers(int index) {
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer getLayers(int index) {
         if (layersBuilder_ == null) {
           return layers_.get(index);
         } else {
@@ -5270,7 +5483,8 @@ public final class VectorTile {
       /**
        * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
        */
-      public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder getLayersOrBuilder(
+      @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder getLayersOrBuilder(
           int index) {
         if (layersBuilder_ == null) {
           return layers_.get(index);  } else {
@@ -5280,7 +5494,8 @@ public final class VectorTile {
       /**
        * <code>repeated .vectortile.Tile.Layer layers = 3;</code>
        */
-      public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder>
+      @Override
+	public java.util.List<? extends io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.LayerOrBuilder>
       getLayersOrBuilderList() {
         if (layersBuilder_ != null) {
           return layersBuilder_.getMessageOrBuilderList();
@@ -5324,12 +5539,14 @@ public final class VectorTile {
         }
         return layersBuilder_;
       }
-      public final Builder setUnknownFields(
+      @Override
+	public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
-      public final Builder mergeUnknownFields(
+      @Override
+	public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
@@ -5350,7 +5567,8 @@ public final class VectorTile {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Tile>
         PARSER = new com.google.protobuf.AbstractParser<Tile>() {
-      public Tile parsePartialFrom(
+      @Override
+	public Tile parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -5367,7 +5585,8 @@ public final class VectorTile {
       return PARSER;
     }
 
-    public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile getDefaultInstanceForType() {
+    @Override
+	public io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5422,7 +5641,8 @@ public final class VectorTile {
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+          @Override
+		public com.google.protobuf.ExtensionRegistry assignDescriptors(
               com.google.protobuf.Descriptors.FileDescriptor root) {
             descriptor = root;
             return null;

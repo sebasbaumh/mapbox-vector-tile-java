@@ -1,10 +1,11 @@
 package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 
-import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
-import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model.JtsMvt;
-import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerBuild;
-import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerParams;
-import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -12,11 +13,11 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
+import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model.JtsMvt;
+import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerParams;
+import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
+import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 
 /**
  * Manual test for ensuring linestring geometry does not miss segments on the end.
@@ -41,10 +42,10 @@ public class JtsAdapterIssue27Test {
 
             final MvtLayerProps mvtLayerProps = new MvtLayerProps();
             final VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();
-            final VectorTile.Tile.Layer.Builder layerBuilder = MvtLayerBuild.newLayerBuilder("myLayerName", mvtLayerParams);
+            final VectorTile.Tile.Layer.Builder layerBuilder = MvtUtil.newLayerBuilder("myLayerName", mvtLayerParams);
             final List<VectorTile.Tile.Feature> features = JtsAdapter.toFeatures(tileGeom.mvtGeoms, mvtLayerProps, new UserDataIgnoreConverter());
             layerBuilder.addAllFeatures(features);
-            MvtLayerBuild.writeProps(layerBuilder, mvtLayerProps);
+            MvtUtil.writeProps(layerBuilder, mvtLayerProps);
             tileBuilder.addLayers(layerBuilder);
 
             final VectorTile.Tile mvt = tileBuilder.build();
@@ -55,7 +56,8 @@ public class JtsAdapterIssue27Test {
             }
 
             // Examine geometry output, will be a bit screwed but observe line segments are present
-            final JtsMvt jtsMvt = MvtReader.loadMvt(outputFile, gf, new TagIgnoreConverter());
+            @SuppressWarnings("unused")
+			final JtsMvt jtsMvt = MvtReader.loadMvt(outputFile, gf, new TagIgnoreConverter());
         }
     }
 }

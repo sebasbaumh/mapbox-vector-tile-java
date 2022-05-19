@@ -1,13 +1,32 @@
 # MapBox Vector Tile - Java
 
 This project allows encoding and decoding of MapBox Vector Tiles (MVT).  
-It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.
+It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.
+
+**Project goals and improvements:**
+* All dependencies were upgraded to their latest version (including JTS)
+* Pull requests from the original source were integrated ([52](https://github.com/wdtinc/mapbox-vector-tile-java/pull/52) and [53](https://github.com/wdtinc/mapbox-vector-tile-java/pull/53))
+* Clean up code and small optimizations
+* Support for JDK 11+
+* The license is still Apache-2.0
+
+## How to use it ##
+There is a Maven artifact in the official Maven repository, so just add this to your Maven POM:
+
+```xml
+<dependency>
+	<groupId>io.github.sebasbaumh</groupId>
+	<artifactId>mapbox-vector-tile</artifactId>
+	<version>22.0.0</version>
+</dependency>
+```
+
+The version reflects the year of the release, e.g. `22.0.0` is a version released in 2022.
 
 The API differs a bit from [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) with the main point being a different namespace (`io.github.sebasbaumh.mapbox.vectortile`) as publishing a project to Maven Central requires to own that namespace.
 
 ---
-
-[![Build Status](https://travis-ci.org/wdtinc/mapbox-vector-tile-java.svg?branch=master)](https://travis-ci.org/wdtinc/mapbox-vector-tile-java)
+*The following content is based on the original code in [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) and may not be fully up to date. It will be reworked step by step.*
 
 Contents
 
@@ -45,7 +64,7 @@ Latest version using JTS 15 with android API level 15 support:
 
 ```xml
 <dependency>
-    <groupId>com.wdtinc</groupId>
+    <groupId>io.github.sebasbaumh</groupId>
     <artifactId>mapbox-vector-tile</artifactId>
     <version>3.1.1</version>
 </dependency>
@@ -55,7 +74,7 @@ JTS 14 with no android support:
 
 ```xml
 <dependency>
-    <groupId>com.wdtinc</groupId>
+    <groupId>io.github.sebasbaumh</groupId>
     <artifactId>mapbox-vector-tile</artifactId>
     <version>2.0.0</version>
 </dependency>
@@ -66,13 +85,13 @@ JTS 14 with no android support:
 Latest version using JTS 15 with android API level 15 support:
 
 ```
-compile 'com.wdtinc:mapbox-vector-tile:3.1.1'
+compile 'io.github.sebasbaumh:mapbox-vector-tile:3.1.1'
 ```
 
 JTS 14 with no android support:
 
 ```
-compile 'com.wdtinc:mapbox-vector-tile:2.0.0'
+compile 'io.github.sebasbaumh:mapbox-vector-tile:2.0.0'
 ```
 
 ### Reading MVTs
@@ -252,7 +271,7 @@ final VectorTile.Tile mvt = encodeMvt(DEFAULT_MVT_PARAMS, bufferedTileGeom);
 
 ## Examples
 
-See [tests](https://github.com/wdtinc/mapbox-vector-tile-java/tree/readme_upgrade/src/test/java/com/wdtinc/mapbox_vector_tile).
+See [tests](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/main/src/test/java/io/github/sebasbaumh/mapbox/vectortile).
 
 ## How to generate VectorTile class using vector_tile.proto
 
@@ -280,10 +299,6 @@ Use the Github issue tracker.
 
  * Creating tile geometry with non-simple line strings that self-cross in many places will be 'noded' by JTS during an intersection operation. This results in ugly output.
  * Invalid or non-simple geometry may not work correctly with JTS operations when creating tile geometry.
-
-## Contributing
-
-See [CONTRIBUTING](CONTRIBUTING.md)
  
 ## License
 

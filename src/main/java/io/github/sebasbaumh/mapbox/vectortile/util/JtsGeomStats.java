@@ -1,11 +1,24 @@
 package io.github.sebasbaumh.mapbox.vectortile.util;
 
-import org.locationtech.jts.geom.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.DefaultLocation;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+
 import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
 import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.JtsAdapter;
 
-import java.util.*;
-
+@NonNullByDefault({DefaultLocation.PARAMETER,DefaultLocation.RETURN_TYPE})
 public final class JtsGeomStats {
 
     public static final class FeatureStats {

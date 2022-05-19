@@ -1,24 +1,49 @@
 package io.github.sebasbaumh.mapbox.vectortile.build;
 
-import org.locationtech.jts.algorithm.ConvexHull;
-import org.locationtech.jts.geom.*;
-import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
-import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.*;
-import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model.JtsLayer;
-import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model.JtsMvt;
-import io.github.sebasbaumh.mapbox.vectortile.util.JdkUtils;
-import org.junit.Test;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.locationtech.jts.algorithm.ConvexHull;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+
+import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.IGeometryFilter;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.JtsAdapter;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.MvtReader;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.TagKeyValueMapConverter;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.TileGeomResult;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.UserDataIgnoreConverter;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.UserDataKeyValueMapConverter;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model.JtsLayer;
+import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model.JtsMvt;
+import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 
 /**
  * Test building MVTs.
  */
+@SuppressWarnings({ "javadoc", "static-method" })
 public final class MvtBuildTest {
 
     private static String TEST_LAYER_NAME = "layerNameHere";
@@ -53,7 +78,7 @@ public final class MvtBuildTest {
      */
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
-    @Test
+	@Test
     public void testPoints() throws IOException {
 
         // Create input geometry
@@ -199,7 +224,7 @@ public final class MvtBuildTest {
         assertEquals(expected, actual);
     }
 
-    @Test
+	@Test
     public void testPointsInLayers() throws IOException {
         Point point1 = createPoint();
         Point point2 = createPoint();
@@ -253,7 +278,7 @@ public final class MvtBuildTest {
         return (Polygon) hullGeom;
     }
 
-    private Point createPoint() {
+    private static Point createPoint() {
         Coordinate coord = new Coordinate(RANDOM.nextInt(4096), RANDOM.nextInt(4096));
         Point point = GEOMETRY_FACTORY.createPoint(coord);
 
@@ -281,14 +306,14 @@ public final class MvtBuildTest {
         final VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();
 
         // Create MVT layer
-        final VectorTile.Tile.Layer.Builder layerBuilder = MvtLayerBuild.newLayerBuilder(TEST_LAYER_NAME, mvtParams);
+        final VectorTile.Tile.Layer.Builder layerBuilder = MvtUtil.newLayerBuilder(TEST_LAYER_NAME, mvtParams);
         final MvtLayerProps layerProps = new MvtLayerProps();
         final UserDataIgnoreConverter ignoreUserData = new UserDataIgnoreConverter();
 
         // MVT tile geometry to MVT features
         final List<VectorTile.Tile.Feature> features = JtsAdapter.toFeatures(tileGeom.mvtGeoms, layerProps, ignoreUserData);
         layerBuilder.addAllFeatures(features);
-        MvtLayerBuild.writeProps(layerBuilder, layerProps);
+        MvtUtil.writeProps(layerBuilder, layerProps);
 
         // Build MVT layer
         final VectorTile.Tile.Layer layer = layerBuilder.build();
@@ -313,13 +338,13 @@ public final class MvtBuildTest {
             Builder() {}
 
             Builder setLayer(String layerName) {
-                JdkUtils.requireNonNull(layerName);
+                Objects.requireNonNull(layerName);
                 activeLayer = layerName;
                 return this;
             }
 
             Builder add(Geometry geometry) {
-                JdkUtils.requireNonNull(geometry);
+                Objects.requireNonNull(geometry);
                 getActiveLayer().add(geometry);
                 return this;
             }
@@ -335,7 +360,7 @@ public final class MvtBuildTest {
 
                     // Create MVT layer
                     final VectorTile.Tile.Layer.Builder layerBuilder =
-                            MvtLayerBuild.newLayerBuilder(name, DEFAULT_MVT_PARAMS);
+                            MvtUtil.newLayerBuilder(name, DEFAULT_MVT_PARAMS);
 
                     final MvtLayerProps layerProps = new MvtLayerProps();
 
@@ -345,7 +370,7 @@ public final class MvtBuildTest {
                                     new UserDataKeyValueMapConverter());
 
                     layerBuilder.addAllFeatures(features);
-                    MvtLayerBuild.writeProps(layerBuilder, layerProps);
+                    MvtUtil.writeProps(layerBuilder, layerProps);
 
                     // Build MVT layer
                     final VectorTile.Tile.Layer mvtLayer = layerBuilder.build();

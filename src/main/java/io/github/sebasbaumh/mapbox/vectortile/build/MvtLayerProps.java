@@ -1,69 +1,79 @@
 package io.github.sebasbaumh.mapbox.vectortile.build;
 
-import io.github.sebasbaumh.mapbox.vectortile.encoding.MvtValue;
-import io.github.sebasbaumh.mapbox.vectortile.util.JdkUtils;
+import java.util.LinkedHashMap;
+import java.util.Objects;
 
-import java.util.*;
+import org.eclipse.jdt.annotation.DefaultLocation;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
+import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 
 /**
  * Support MVT features that must reference properties by their key and value index.
  */
-public final class MvtLayerProps {
-    private LinkedHashMap<String, Integer> keys;
-    private LinkedHashMap<Object, Integer> vals;
+@NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
+public class MvtLayerProps
+{
+	private final LinkedHashMap<String, Integer> keys = new LinkedHashMap<String, Integer>();
+	private final LinkedHashMap<Object, Integer> vals = new LinkedHashMap<Object, Integer>();
 
-    public MvtLayerProps() {
-        keys = new LinkedHashMap<>();
-        vals = new LinkedHashMap<>();
-    }
+	/**
+	 * Constructs an instance.
+	 */
+	public MvtLayerProps()
+	{
+	}
 
-    public Integer keyIndex(String k) {
-        return keys.get(k);
-    }
+	/**
+	 * Add the key and return it's index code. If the key already is present, the previous index code is returned and no
+	 * insertion is done.
+	 * @param key key to add
+	 * @return index of the key
+	 */
+	public int addKey(String key)
+	{
+		Objects.requireNonNull(key);
+		int nextIndex = keys.size();
+		final Integer mapIndex = keys.putIfAbsent(key, nextIndex);
+		return mapIndex == null ? nextIndex : mapIndex;
+	}
 
-    public Integer valueIndex(Object v) {
-        return vals.get(v);
-    }
+	/**
+	 * Add the value and return it's index code. If the value already is present, the previous index code is returned
+	 * and no insertion is done. If {@code value} is an unsupported type for encoding in a MVT, then it will not be
+	 * added.
+	 * @param value value to add
+	 * @return index of the value, -1 on unsupported value types
+	 * @see MvtUtil#isValidPropValue(Object)
+	 */
+	public int addValue(Object value)
+	{
+		Objects.requireNonNull(value);
+		if (!MvtUtil.isValidPropValue(value))
+		{
+			return -1;
+		}
 
-    /**
-     * Add the key and return it's index code. If the key already is present, the previous
-     * index code is returned and no insertion is done.
-     *
-     * @param key key to add
-     * @return index of the key
-     */
-    public int addKey(String key) {
-        JdkUtils.requireNonNull(key);
-        int nextIndex = keys.size();
-        final Integer mapIndex = JdkUtils.putIfAbsent(keys, key, nextIndex);
-        return mapIndex == null ? nextIndex : mapIndex;
-    }
+		int nextIndex = vals.size();
+		final Integer mapIndex = vals.putIfAbsent(value, nextIndex);
+		return mapIndex == null ? nextIndex : mapIndex;
+	}
 
-    /**
-     * Add the value and return it's index code. If the value already is present, the previous
-     * index code is returned and no insertion is done. If {@code value} is an unsupported type
-     * for encoding in a MVT, then it will not be added.
-     *
-     * @param value value to add
-     * @return index of the value, -1 on unsupported value types
-     * @see MvtValue#isValidPropValue(Object)
-     */
-    public int addValue(Object value) {
-        JdkUtils.requireNonNull(value);
-        if(!MvtValue.isValidPropValue(value)) {
-            return -1;
-        }
+	/**
+	 * Gets all keys.
+	 * @return keys
+	 */
+	public Iterable<String> getKeys()
+	{
+		return keys.keySet();
+	}
 
-        int nextIndex = vals.size();
-        final Integer mapIndex = JdkUtils.putIfAbsent(vals, value, nextIndex);
-        return mapIndex == null ? nextIndex : mapIndex;
-    }
-
-    public Iterable<String> getKeys() {
-        return keys.keySet();
-    }
-
-    public Iterable<Object> getVals() {
-        return vals.keySet();
-    }
+	/**
+	 * Gets all values.
+	 * @return values
+	 */
+	public Iterable<Object> getValues()
+	{
+		return vals.keySet();
+	}
 }

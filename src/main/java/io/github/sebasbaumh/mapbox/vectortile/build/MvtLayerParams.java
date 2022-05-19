@@ -1,9 +1,12 @@
 package io.github.sebasbaumh.mapbox.vectortile.build;
 
+import org.eclipse.jdt.annotation.DefaultLocation;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Immutable parameters collection for Mapbox-Vector-Tile creation.
  */
+@NonNullByDefault({DefaultLocation.PARAMETER,DefaultLocation.RETURN_TYPE})
 public final class MvtLayerParams {
 
     /**

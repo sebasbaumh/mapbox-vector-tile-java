@@ -1,123 +1,126 @@
 package io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.junit.Test;
-
-import java.util.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public final class JtsLayerTest {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-    private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+import org.junit.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
-    @Test
-    public void testLayerExtent() {
-        String layerName = "Points of Interest";
-        JtsLayer layer = new JtsLayer(layerName, new ArrayList<>(), 2048);
+@SuppressWarnings({ "javadoc", "static-method" })
+public final class JtsLayerTest
+{
 
-        int actual = 2048;
-        int expected = layer.getExtent();
-        assertEquals(expected,actual);
-    }
-    
-    @Test
-    public void testLayerName() {
-        String layerName = "Points of Interest";
-        JtsLayer layer = new JtsLayer(layerName);
+	private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
-        String actual = layer.getName();
-        String expected = layerName;
-        assertEquals(expected, actual);
-    }
+	private static Point createPoint(int[] coordinates)
+	{
+		return GEOMETRY_FACTORY.createPoint(new Coordinate(coordinates[0], coordinates[1]));
+	}
 
-    @Test
-    public void testLayerCollection() {
-        String layerName = "Points of Interest";
-        List<Geometry> geometries = new ArrayList<>();
+	@Test
+	public void testAddGeometries()
+	{
+		String layerName = "Points of Interest";
+		List<Geometry> geometries = new ArrayList<>();
 
-        JtsLayer layer = new JtsLayer(layerName, geometries);
+		Point point = createPoint(new int[] { 50, 0 });
+		Point point2 = createPoint(new int[] { 51, 1 });
+		Collection<Geometry> points = Arrays.asList(point, point2);
 
-        String actualName = layer.getName();
-        String expectedName = layerName;
-        assertEquals(expectedName, actualName);
+		JtsLayer layer = new JtsLayer(layerName, geometries);
+		layer.getGeometries().addAll(points);
 
-        Collection<Geometry> actualGeometry = layer.getGeometries();
-        Collection<Geometry> expectedGeometry = geometries;
-        assertEquals(expectedGeometry, actualGeometry);
-    }
+		assertTrue(layer.getGeometries().containsAll(Arrays.asList(point, point2)));
+	}
 
-    @Test
-    public void testAddGeometry() {
-        String layerName = "Points of Interest";
-        List<Geometry> geometries = new ArrayList<>();
+	@Test
+	public void testAddGeometry()
+	{
+		String layerName = "Points of Interest";
+		List<Geometry> geometries = new ArrayList<>();
 
-        Point point = createPoint(new int[]{51, 0});
+		Point point = createPoint(new int[] { 51, 0 });
 
-        JtsLayer layer = new JtsLayer(layerName, geometries);
-        layer.getGeometries().add(point);
+		JtsLayer layer = new JtsLayer(layerName, geometries);
+		layer.getGeometries().add(point);
 
-        assertTrue(layer.getGeometries().contains(point));
-    }
+		assertTrue(layer.getGeometries().contains(point));
+	}
 
+	@Test
+	public void testEquality()
+	{
+		JtsLayer layer1 = new JtsLayer("apples");
+		JtsLayer layer1Duplicate = new JtsLayer("apples");
+		assertTrue(layer1.equals(layer1Duplicate));
 
-    @Test
-    public void testAddGeometries() {
-        String layerName = "Points of Interest";
-        List<Geometry> geometries = new ArrayList<>();
+		JtsLayer layer2 = new JtsLayer("oranges");
+		assertFalse(layer1.equals(layer2));
+	}
 
-        Point point = createPoint(new int[]{50, 0});
-        Point point2 = createPoint(new int[]{51, 1});
-        Collection<Geometry> points = Arrays.asList(point, point2);
+	@Test
+	public void testHash()
+	{
+		JtsLayer layer = new JtsLayer("code");
+		int actual = layer.hashCode();
+		int expected = -1354967378;
+		assertEquals(expected, actual);
+	}
 
-        JtsLayer layer = new JtsLayer(layerName, geometries);
-        layer.getGeometries().addAll(points);
+	@Test
+	public void testLayerCollection()
+	{
+		String layerName = "Points of Interest";
+		List<Geometry> geometries = new ArrayList<>();
 
-        assertTrue(layer.getGeometries().containsAll(Arrays.asList(point, point2)));
-    }
+		JtsLayer layer = new JtsLayer(layerName, geometries);
 
-    @Test
-    public void testEquality() {
-        JtsLayer layer1 = new JtsLayer("apples");
-        JtsLayer layer1Duplicate = new JtsLayer("apples");
-        assertTrue(layer1.equals(layer1Duplicate));
+		String actualName = layer.getName();
+		String expectedName = layerName;
+		assertEquals(expectedName, actualName);
 
-        JtsLayer layer2 = new JtsLayer("oranges");
-        assertFalse(layer1.equals(layer2));
-    }
+		Collection<Geometry> actualGeometry = layer.getGeometries();
+		Collection<Geometry> expectedGeometry = geometries;
+		assertEquals(expectedGeometry, actualGeometry);
+	}
 
-    @Test
-    public void testToString() {
-        JtsLayer layer1 = new JtsLayer("apples");
-        String actual = layer1.toString();
-        String expected = "Layer{name='apples', geometries=[], extent=4096}";
-        assertEquals(expected, actual);
-    }
+	@Test
+	public void testLayerExtent()
+	{
+		String layerName = "Points of Interest";
+		JtsLayer layer = new JtsLayer(layerName, new ArrayList<>(), 2048);
 
-    @Test
-    public void testHash() {
-        JtsLayer layer = new JtsLayer("code");
-        int actual = layer.hashCode();
-        int expected = -1354967378;
-        assertEquals(expected, actual);
-    }
+		int actual = 2048;
+		int expected = layer.getExtent();
+		assertEquals(expected, actual);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNullName() {
-        new JtsLayer(null);
-    }
+	@Test
+	public void testLayerName()
+	{
+		String layerName = "Points of Interest";
+		JtsLayer layer = new JtsLayer(layerName);
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNullCollection() {
-        new JtsLayer("apples", null);
-    }
+		String actual = layer.getName();
+		String expected = layerName;
+		assertEquals(expected, actual);
+	}
 
-    private Point createPoint(int[] coordinates) {
-        return GEOMETRY_FACTORY.createPoint(new Coordinate(coordinates[0], coordinates[1]));
-    }
+	@Test
+	public void testToString()
+	{
+		JtsLayer layer1 = new JtsLayer("apples");
+		String actual = layer1.toString();
+		String expected = "Layer{name='apples', geometries=[], extent=4096}";
+		assertEquals(expected, actual);
+	}
 }
