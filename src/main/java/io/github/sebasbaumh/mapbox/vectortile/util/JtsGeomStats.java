@@ -18,150 +18,144 @@ import org.locationtech.jts.geom.Polygon;
 import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
 import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.JtsAdapter;
 
-@NonNullByDefault({DefaultLocation.PARAMETER,DefaultLocation.RETURN_TYPE})
-public final class JtsGeomStats {
+@NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
+public final class JtsGeomStats
+{
+	public final Map<VectorTile.Tile.GeomType, Integer> featureCounts;
+	public final List<FeatureStats> featureStats;
 
-    public static final class FeatureStats {
-        public int totalPts;
-        public int repeatedPts;
+	private JtsGeomStats()
+	{
+		final VectorTile.Tile.GeomType[] geomTypes = VectorTile.Tile.GeomType.values();
+		featureCounts = new HashMap<>(geomTypes.length);
+		for (VectorTile.Tile.GeomType nextGeomType : geomTypes)
+		{
+			featureCounts.put(nextGeomType, 0);
+		}
+		this.featureStats = new ArrayList<>();
+	}
 
-        @Override
-        public String toString() {
-            return "FeatureStats{" +
-                    "totalPts=" + totalPts +
-                    ", repeatedPts=" + repeatedPts +
-                    '}';
-        }
-    }
+	private static int checkRepeatedPoints2d(LineString lineString)
+	{
+		int repeatedPoints = 0;
 
-    public Map<VectorTile.Tile.GeomType, Integer> featureCounts;
-    public List<FeatureStats> featureStats;
+		final CoordinateSequence coordSeq = lineString.getCoordinateSequence();
+		Coordinate nextCoord = null, prevCoord;
+		for (int i = 0; i < coordSeq.size(); ++i)
+		{
+			prevCoord = nextCoord;
+			nextCoord = coordSeq.getCoordinate(i);
+			if (nextCoord.equals(prevCoord))
+			{
+				++repeatedPoints;
+			}
+		}
+		return repeatedPoints;
+	}
 
-    private JtsGeomStats() {
-        final VectorTile.Tile.GeomType[] geomTypes = VectorTile.Tile.GeomType.values();
-        featureCounts = new HashMap<>(geomTypes.length);
+	private static FeatureStats getStats(Geometry geom, VectorTile.Tile.GeomType type)
+	{
+		switch (type)
+		{
+			case POINT:
+				return pointStats(geom);
+			case LINESTRING:
+				return lineStats(geom);
+			case POLYGON:
+				return polyStats(geom);
+			default:
+				return new FeatureStats();
+		}
+	}
 
-        for(VectorTile.Tile.GeomType nextGeomType : geomTypes) {
-            featureCounts.put(nextGeomType, 0);
-        }
+	/**
+	 * Get feature counts and feature statistics (points and repeated points).
+	 * @param flatGeomList geometry under analysis
+	 * @return the resulting statistics
+	 */
+	public static JtsGeomStats getStats(Iterable<Geometry> flatGeomList)
+	{
+		final JtsGeomStats stats = new JtsGeomStats();
+		for (Geometry nextGeom : flatGeomList)
+		{
+			final VectorTile.Tile.GeomType geomType = JtsAdapter.toGeomType(nextGeom);
 
-        this.featureStats = new ArrayList<>();
-    }
+			// Count features by type
+			Integer value = stats.featureCounts.get(geomType);
+			value = value == null ? 1 : value + 1;
+			stats.featureCounts.put(geomType, value);
 
-    @Override
-    public String toString() {
-        return "JtsGeomStats{" +
-                "featureCounts=" + featureCounts +
-                ", featureStats=" + featureStats +
-                '}';
-    }
+			// Get stats per feature
+			stats.featureStats.add(getStats(nextGeom, geomType));
+		}
+		return stats;
+	}
 
-    /**
-     * Get feature counts and feature statistics (points and repeated points).
-     *
-     * @param flatGeomList geometry under analysis
-     * @return the resulting statistics
-     */
-    public static JtsGeomStats getStats(List<Geometry> flatGeomList) {
-        final JtsGeomStats stats = new JtsGeomStats();
+	private static FeatureStats lineStats(Geometry geom)
+	{
+		final FeatureStats featureStats = new FeatureStats();
+		for (int i = 0; i < geom.getNumGeometries(); ++i)
+		{
+			final LineString lineString = (LineString) geom.getGeometryN(i);
+			featureStats.totalPts += lineString.getNumPoints();
+			featureStats.repeatedPts += checkRepeatedPoints2d(lineString);
+		}
+		return featureStats;
+	}
 
-        for(Geometry nextGeom : flatGeomList) {
-            final VectorTile.Tile.GeomType geomType = JtsAdapter.toGeomType(nextGeom);
+	private static FeatureStats pointStats(Geometry geom)
+	{
+		final FeatureStats featureStats = new FeatureStats();
+		final HashSet<Point> pointSet = new HashSet<>(geom.getNumPoints());
+		featureStats.totalPts = geom.getNumPoints();
 
-            // Count features by type
-            Integer value = stats.featureCounts.get(geomType);
-            value = value == null ? 1 : value + 1;
-            stats.featureCounts.put(geomType, value);
+		for (int i = 0; i < geom.getNumGeometries(); ++i)
+		{
+			final Point p = (Point) geom.getGeometryN(i);
+			featureStats.repeatedPts += pointSet.add(p) ? 0 : 1;
+		}
+		return featureStats;
+	}
 
-            // Get stats per feature
-            stats.featureStats.add(getStats(nextGeom, geomType));
-        }
+	private static FeatureStats polyStats(Geometry geom)
+	{
+		final FeatureStats featureStats = new FeatureStats();
+		for (int i = 0; i < geom.getNumGeometries(); ++i)
+		{
+			final Polygon nextPoly = (Polygon) geom.getGeometryN(i);
 
-        return stats;
-    }
+			// Stats: exterior ring
+			final LineString exteriorRing = nextPoly.getExteriorRing();
+			featureStats.totalPts += exteriorRing.getNumPoints();
+			featureStats.repeatedPts += checkRepeatedPoints2d(exteriorRing);
 
-    private static FeatureStats getStats(Geometry geom, VectorTile.Tile.GeomType type) {
-        FeatureStats featureStats;
+			// Stats: interior rings
+			for (int ringIndex = 0; ringIndex < nextPoly.getNumInteriorRing(); ++ringIndex)
+			{
 
-        switch (type) {
-            case POINT:
-                featureStats = pointStats(geom);
-                break;
-            case LINESTRING:
-                featureStats = lineStats(geom);
-                break;
-            case POLYGON:
-                featureStats = polyStats(geom);
-                break;
-            default:
-                featureStats = new FeatureStats();
-        }
+				final LineString nextInteriorRing = nextPoly.getInteriorRingN(ringIndex);
+				featureStats.totalPts += nextInteriorRing.getNumPoints();
+				featureStats.repeatedPts += checkRepeatedPoints2d(nextInteriorRing);
+			}
+		}
+		return featureStats;
+	}
 
-        return featureStats;
-    }
+	@Override
+	public String toString()
+	{
+		return "JtsGeomStats{" + "featureCounts=" + featureCounts + ", featureStats=" + featureStats + '}';
+	}
 
-    private static FeatureStats pointStats(Geometry geom) {
-        final FeatureStats featureStats = new FeatureStats();
+	public static final class FeatureStats
+	{
+		public int repeatedPts;
+		public int totalPts;
 
-        final HashSet<Point> pointSet = new HashSet<>(geom.getNumPoints());
-        featureStats.totalPts = geom.getNumPoints();
-
-        for(int i = 0; i < geom.getNumGeometries(); ++i) {
-            final Point p = (Point) geom.getGeometryN(i);
-            featureStats.repeatedPts += pointSet.add(p) ? 0 : 1;
-        }
-
-        return featureStats;
-    }
-
-    private static FeatureStats lineStats(Geometry geom) {
-        final FeatureStats featureStats = new FeatureStats();
-
-        for(int i = 0; i < geom.getNumGeometries(); ++i) {
-            final LineString lineString = (LineString) geom.getGeometryN(i);
-            featureStats.totalPts += lineString.getNumPoints();
-            featureStats.repeatedPts += checkRepeatedPoints2d(lineString);
-        }
-
-        return featureStats;
-    }
-
-    private static FeatureStats polyStats(Geometry geom) {
-        final FeatureStats featureStats = new FeatureStats();
-
-        for(int i = 0; i < geom.getNumGeometries(); ++i) {
-            final Polygon nextPoly = (Polygon) geom.getGeometryN(i);
-
-            // Stats: exterior ring
-            final LineString exteriorRing = nextPoly.getExteriorRing();
-            featureStats.totalPts += exteriorRing.getNumPoints();
-            featureStats.repeatedPts += checkRepeatedPoints2d(exteriorRing);
-
-            // Stats: interior rings
-            for(int ringIndex = 0; ringIndex < nextPoly.getNumInteriorRing(); ++ringIndex) {
-
-                final LineString nextInteriorRing = nextPoly.getInteriorRingN(ringIndex);
-                featureStats.totalPts += nextInteriorRing.getNumPoints();
-                featureStats.repeatedPts += checkRepeatedPoints2d(nextInteriorRing);
-            }
-        }
-
-        return featureStats;
-    }
-
-    private static int checkRepeatedPoints2d(LineString lineString) {
-        int repeatedPoints = 0;
-
-        final CoordinateSequence coordSeq = lineString.getCoordinateSequence();
-        Coordinate nextCoord = null, prevCoord;
-        for(int i = 0; i < coordSeq.size(); ++i) {
-            prevCoord = nextCoord;
-            nextCoord = coordSeq.getCoordinate(i);
-            if(nextCoord.equals(prevCoord)) {
-                ++repeatedPoints;
-            }
-        }
-
-        return repeatedPoints;
-    }
+		@Override
+		public String toString()
+		{
+			return "FeatureStats{" + "totalPts=" + totalPts + ", repeatedPts=" + repeatedPts + '}';
+		}
+	}
 }

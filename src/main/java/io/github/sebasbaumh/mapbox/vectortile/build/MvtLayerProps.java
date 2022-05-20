@@ -15,7 +15,7 @@ import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 public class MvtLayerProps
 {
 	private final LinkedHashMap<String, Integer> keys = new LinkedHashMap<String, Integer>();
-	private final LinkedHashMap<Object, Integer> vals = new LinkedHashMap<Object, Integer>();
+	private final LinkedHashMap<Object, Integer> values = new LinkedHashMap<Object, Integer>();
 
 	/**
 	 * Constructs an instance.
@@ -54,8 +54,8 @@ public class MvtLayerProps
 			return -1;
 		}
 
-		int nextIndex = vals.size();
-		final Integer mapIndex = vals.putIfAbsent(value, nextIndex);
+		int nextIndex = values.size();
+		final Integer mapIndex = values.putIfAbsent(value, nextIndex);
 		return mapIndex == null ? nextIndex : mapIndex;
 	}
 
@@ -74,6 +74,13 @@ public class MvtLayerProps
 	 */
 	public Iterable<Object> getValues()
 	{
-		return vals.keySet();
+		return values.keySet();
 	}
+
+	@Override
+	public String toString()
+	{
+		return "MvtLayerProps [keys=" + keys + ", values=" + values + "]";
+	}
+
 }

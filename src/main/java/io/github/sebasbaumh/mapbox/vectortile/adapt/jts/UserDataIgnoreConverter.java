@@ -1,7 +1,5 @@
 package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 
-import javax.annotation.Nullable;
-
 import org.eclipse.jdt.annotation.DefaultLocation;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
@@ -16,8 +14,7 @@ import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
 public class UserDataIgnoreConverter implements IUserDataConverter
 {
 	@Override
-	public void addTags(@Nullable Object userData, MvtLayerProps layerProps,
-			VectorTile.Tile.Feature.Builder featureBuilder)
+	public void addTags(Object userData, MvtLayerProps layerProps, VectorTile.Tile.Feature.Builder featureBuilder)
 	{
 	}
 }

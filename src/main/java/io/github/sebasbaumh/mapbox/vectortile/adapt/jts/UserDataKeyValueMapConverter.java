@@ -3,11 +3,8 @@ package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import org.eclipse.jdt.annotation.DefaultLocation;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.slf4j.LoggerFactory;
 
 import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
 import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
@@ -21,7 +18,6 @@ import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public class UserDataKeyValueMapConverter implements IUserDataConverter
 {
-
 	/**
 	 * The {@link Map} key for the feature id.
 	 */
@@ -53,61 +49,63 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 	}
 
 	@Override
-	public void addTags(@Nullable Object userData, MvtLayerProps layerProps,
-			VectorTile.Tile.Feature.Builder featureBuilder)
+	public void addTags(Object userData, MvtLayerProps layerProps, VectorTile.Tile.Feature.Builder featureBuilder)
 	{
-		if (userData != null)
+		try
 		{
-			try
+			@SuppressWarnings("unchecked")
+			final Map<String, Object> userDataMap = (Map<String, Object>) userData;
+
+			for (Map.Entry<String, Object> e : userDataMap.entrySet())
 			{
-				@SuppressWarnings("unchecked")
-				final Map<String, Object> userDataMap = (Map<String, Object>) userData;
+				final String key = e.getKey();
+				final Object value = e.getValue();
 
-				for (Map.Entry<String, Object> e : userDataMap.entrySet())
+				if (key != null && value != null)
 				{
-					final String key = e.getKey();
-					final Object value = e.getValue();
+					final int valueIndex = layerProps.addValue(value);
 
-					if (key != null && value != null)
+					if (valueIndex >= 0)
 					{
-						final int valueIndex = layerProps.addValue(value);
-
-						if (valueIndex >= 0)
-						{
-							featureBuilder.addTags(layerProps.addKey(key));
-							featureBuilder.addTags(valueIndex);
-						}
+						featureBuilder.addTags(layerProps.addKey(key));
+						featureBuilder.addTags(valueIndex);
 					}
 				}
-
-				// Set feature id value
-				if (setId)
-				{
-					final Object idValue = userDataMap.get(idKey);
-					if (idValue != null)
-					{
-						if (idValue instanceof Long || idValue instanceof Integer || idValue instanceof Float
-								|| idValue instanceof Double || idValue instanceof Byte || idValue instanceof Short)
-						{
-							featureBuilder.setId((long) idValue);
-						}
-						else if (idValue instanceof String)
-						{
-							try
-							{
-								featureBuilder.setId(Long.parseLong((String) idValue));
-							}
-							catch (NumberFormatException expected)
-							{}
-						}
-					}
-				}
-
 			}
-			catch (ClassCastException e)
+
+			// Set feature id value
+			if (setId)
 			{
-				LoggerFactory.getLogger(UserDataKeyValueMapConverter.class).error(e.getMessage(), e);
+				final Object idValue = userDataMap.get(idKey);
+				if (idValue != null)
+				{
+					if (idValue instanceof Long || idValue instanceof Integer || idValue instanceof Float
+							|| idValue instanceof Double || idValue instanceof Byte || idValue instanceof Short)
+					{
+						featureBuilder.setId((long) idValue);
+					}
+					else if (idValue instanceof String)
+					{
+						try
+						{
+							featureBuilder.setId(Long.parseLong((String) idValue));
+						}
+						catch (NumberFormatException expected)
+						{}
+					}
+				}
 			}
 		}
+		catch (ClassCastException ex)
+		{
+			throw new IllegalArgumentException("unsupported user data: " + userData, ex);
+		}
 	}
+
+	@Override
+	public String toString()
+	{
+		return this.getClass().getSimpleName() + " [setId=" + setId + ", idKey=" + idKey + "]";
+	}
+
 }

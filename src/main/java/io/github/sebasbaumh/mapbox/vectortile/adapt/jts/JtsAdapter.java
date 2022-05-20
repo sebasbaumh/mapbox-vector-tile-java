@@ -42,6 +42,57 @@ import io.github.sebasbaumh.mapbox.vectortile.util.Vec2d;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public final class JtsAdapter
 {
+	/**
+	 * <p>
+	 * Recursively convert a {@link Geometry}, which may be an instance of {@link GeometryCollection} with mixed element
+	 * types, into a flat list containing only the following {@link Geometry} types:
+	 * </p>
+	 * <ul>
+	 * <li>{@link Point}</li>
+	 * <li>{@link LineString}</li>
+	 * <li>{@link Polygon}</li>
+	 * <li>{@link MultiPoint}</li>
+	 * <li>{@link MultiLineString}</li>
+	 * <li>{@link MultiPolygon}</li>
+	 * </ul>
+	 * <p>
+	 * WARNING: Any other Geometry types that were not mentioned in the list above will be discarded!
+	 * </p>
+	 * <p>
+	 * Useful for converting a generic geometry into a list of simple MVT-feature-ready geometries.
+	 * </p>
+	 * @param geom geometry to flatten
+	 * @return list of MVT-feature-ready geometries
+	 */
+	public static Collection<Geometry> collectFlatGeometries(Geometry geom)
+	{
+		ArrayList<Geometry> singleGeoms = new ArrayList<Geometry>();
+		collectFlatGeometries(geom, singleGeoms);
+		return singleGeoms;
+	}
+
+	/**
+	 * Collects all support geometries into a given collection of flat geometries.
+	 * @param geom geometry to flatten
+	 * @param singleGeoms list of MVT-feature-ready geometries
+	 */
+	private static void collectFlatGeometries(Geometry geom, Collection<Geometry> singleGeoms)
+	{
+		if (geom instanceof Point || geom instanceof MultiPoint || geom instanceof LineString
+				|| geom instanceof MultiLineString || geom instanceof Polygon || geom instanceof MultiPolygon)
+		{
+			singleGeoms.add(geom);
+		}
+		else if (geom instanceof GeometryCollection)
+		{
+			// Push all child geometries
+			int nextGeomCount = geom.getNumGeometries();
+			for (int i = 0; i < nextGeomCount; ++i)
+			{
+				collectFlatGeometries(geom.getGeometryN(i), singleGeoms);
+			}
+		}
+	}
 
 	/**
 	 * <p>
@@ -57,10 +108,8 @@ public final class JtsAdapter
 	private static int countCoordRepeatReverse(Coordinate[] coords)
 	{
 		int repeatCoords = 0;
-
 		final Coordinate firstCoord = coords[0];
 		Coordinate nextCoord;
-
 		for (int i = coords.length - 1; i > 0; --i)
 		{
 			nextCoord = coords[i];
@@ -73,29 +122,7 @@ public final class JtsAdapter
 				break;
 			}
 		}
-
 		return repeatCoords;
-	}
-
-	/**
-	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
-	 * (intersection) and transformed geometry for encoding to MVT.
-	 * <p>
-	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
-	 * geometry depending on styling.
-	 * </p>
-	 * @param g original 'source' geometry
-	 * @param tileEnvelope world coordinate bounds for tile
-	 * @param geomFactory creates a geometry for the tile envelope
-	 * @param mvtLayerParams specifies vector tile properties
-	 * @param filter geometry values that fail filter after transforms are removed
-	 * @return tile geometry result
-	 * @see TileGeomResult
-	 */
-	public static TileGeomResult createTileGeom(Geometry g, Envelope tileEnvelope, GeometryFactory geomFactory,
-			MvtLayerParams mvtLayerParams, IGeometryFilter filter)
-	{
-		return createTileGeom(flatFeatureList(g), tileEnvelope, geomFactory, mvtLayerParams, filter);
 	}
 
 	/**
@@ -107,68 +134,62 @@ public final class JtsAdapter
 	 * Allows specifying separate tile and clipping coordinates. {@code clipEnvelope} can be bigger than
 	 * {@code tileEnvelope} to have geometry exist outside the MVT tile extent.
 	 * </p>
-	 * @param g original 'source' geometry, passed through {@link #flatFeatureList(Geometry)}
+	 * @param flatGeometries original 'source' geometry, passed through {@link #flatFeatureList(Geometry)}
 	 * @param tileEnvelope world coordinate bounds for tile, used for transforms
 	 * @param clipEnvelope world coordinates to clip tile by
 	 * @param geomFactory creates a geometry for the tile envelope
 	 * @param mvtLayerParams specifies vector tile properties
-	 * @param filter geometry values that fail filter after transforms are removed
-	 * @return tile geometry result
-	 * @see TileGeomResult
+	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
+	 * @return tile geometries
 	 */
-	public static TileGeomResult createTileGeom(List<Geometry> g, Envelope tileEnvelope, Envelope clipEnvelope,
-			GeometryFactory geomFactory, MvtLayerParams mvtLayerParams, IGeometryFilter filter)
+	public static Collection<Geometry> createTileGeom(Collection<Geometry> flatGeometries, Envelope tileEnvelope,
+			Envelope clipEnvelope, GeometryFactory geomFactory, MvtLayerParams mvtLayerParams,
+			@Nullable IGeometryFilter filter)
 	{
+		double xDiff = tileEnvelope.getWidth();
+		double yDiff = tileEnvelope.getHeight();
+		double xOffset = -tileEnvelope.getMinX();
+		double yOffset = -tileEnvelope.getMinY();
 
-		final Geometry tileClipGeom = geomFactory.toGeometry(clipEnvelope);
-
-		final AffineTransformation t = new AffineTransformation();
-		final double xDiff = tileEnvelope.getWidth();
-		final double yDiff = tileEnvelope.getHeight();
-
-		final double xOffset = -tileEnvelope.getMinX();
-		final double yOffset = -tileEnvelope.getMinY();
-
+		// build transformation to transform geometry to the tile
+		AffineTransformation t = new AffineTransformation();
 		// Transform Setup: Shift to 0 as minimum value
 		t.translate(xOffset, yOffset);
-
 		// Transform Setup: Scale X and Y to tile extent values, flip Y values
 		t.scale(1d / (xDiff / mvtLayerParams.extent), -1d / (yDiff / mvtLayerParams.extent));
-
 		// Transform Setup: Bump Y values to positive quadrant
 		t.translate(0d, mvtLayerParams.extent);
 
 		// The area contained in BOTH the 'original geometry', g, AND the 'clip envelope geometry' is the 'tile
 		// geometry'
-		final List<Geometry> intersectedGeoms = flatIntersection(tileClipGeom, g);
-		final List<Geometry> transformedGeoms = new ArrayList<>(intersectedGeoms.size());
+		Geometry tileClipGeom = geomFactory.toGeometry(clipEnvelope);
+		Collection<Geometry> intersectedGeoms = flatIntersection(tileClipGeom, flatGeometries);
+		ArrayList<Geometry> transformedGeoms = new ArrayList<Geometry>(intersectedGeoms.size());
 
 		// Transform intersected geometry
 		Geometry nextTransformGeom;
-		Object nextUserData;
 		for (Geometry nextInterGeom : intersectedGeoms)
 		{
-			nextUserData = nextInterGeom.getUserData();
-
+			// get user data of base geometry
+			Object nextUserData = nextInterGeom.getUserData();
+			// transform it to tile
 			nextTransformGeom = t.transform(nextInterGeom);
-
-			// Floating --> Integer, still contained within doubles
+			// round its coordinates to integer (though they are still stored as doubles)
 			nextTransformGeom.apply(RoundingFilter.INSTANCE);
 
 			// TODO: Refactor line simplification
 			nextTransformGeom = TopologyPreservingSimplifier.simplify(nextTransformGeom, .1d); // Can't use 0d, specify
 																								// value < .5d
-
+			// copy user data (if any)
 			nextTransformGeom.setUserData(nextUserData);
 
-			// Apply filter on transformed geometry
-			if (filter.accept(nextTransformGeom))
+			// Apply filter on transformed geometry (if any)
+			if ((filter == null) || filter.accept(nextTransformGeom))
 			{
 				transformedGeoms.add(nextTransformGeom);
 			}
 		}
-
-		return new TileGeomResult(intersectedGeoms, transformedGeoms);
+		return transformedGeoms;
 	}
 
 	/**
@@ -180,18 +201,60 @@ public final class JtsAdapter
 	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
 	 * geometry depending on styling.
 	 * </p>
-	 * @param g original 'source' geometry, passed through {@link #flatFeatureList(Geometry)}
+	 * @param flatGeometries original 'source' geometry, passed through {@link #flatFeatureList(Geometry)}
 	 * @param tileEnvelope world coordinate bounds for tile
 	 * @param geomFactory creates a geometry for the tile envelope
 	 * @param mvtLayerParams specifies vector tile properties
-	 * @param filter geometry values that fail filter after transforms are removed
-	 * @return tile geometry result
-	 * @see TileGeomResult
+	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
+	 * @return tile geometries
 	 */
-	public static TileGeomResult createTileGeom(List<Geometry> g, Envelope tileEnvelope, GeometryFactory geomFactory,
-			MvtLayerParams mvtLayerParams, IGeometryFilter filter)
+	public static Collection<Geometry> createTileGeom(Collection<Geometry> flatGeometries, Envelope tileEnvelope,
+			GeometryFactory geomFactory, MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
 	{
-		return createTileGeom(g, tileEnvelope, tileEnvelope, geomFactory, mvtLayerParams, filter);
+		return createTileGeom(flatGeometries, tileEnvelope, tileEnvelope, geomFactory, mvtLayerParams, filter);
+	}
+
+	/**
+	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
+	 * (intersection) and transformed geometry for encoding to MVT.
+	 * <p>
+	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
+	 * geometry depending on styling.
+	 * </p>
+	 * @param geom original 'source' geometry
+	 * @param tileEnvelope world coordinate bounds for tile
+	 * @param clipEnvelope world coordinates to clip tile by
+	 * @param geomFactory creates a geometry for the tile envelope
+	 * @param mvtLayerParams specifies vector tile properties
+	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
+	 * @return tile geometries
+	 */
+	public static Collection<Geometry> createTileGeom(Geometry geom, Envelope tileEnvelope, Envelope clipEnvelope,
+			GeometryFactory geomFactory, MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
+	{
+		return createTileGeom(collectFlatGeometries(geom), tileEnvelope, clipEnvelope, geomFactory, mvtLayerParams,
+				filter);
+	}
+
+	/**
+	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
+	 * (intersection) and transformed geometry for encoding to MVT.
+	 * <p>
+	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
+	 * geometry depending on styling.
+	 * </p>
+	 * @param geom original 'source' geometry
+	 * @param tileEnvelope world coordinate bounds for tile
+	 * @param geomFactory creates a geometry for the tile envelope
+	 * @param mvtLayerParams specifies vector tile properties
+	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
+	 * @return tile geometries
+	 */
+	public static Collection<Geometry> createTileGeom(Geometry geom, Envelope tileEnvelope, GeometryFactory geomFactory,
+			MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
+	{
+		return createTileGeom(collectFlatGeometries(geom), tileEnvelope, tileEnvelope, geomFactory, mvtLayerParams,
+				filter);
 	}
 
 	/**
@@ -229,41 +292,33 @@ public final class JtsAdapter
 	 * </p>
 	 * @param geom geometry to flatten
 	 * @return list of MVT-feature-ready geometries
+	 * @deprecated use {@link #collectFlatGeometries(Geometry)} instead
 	 */
+	@Deprecated
 	public static List<Geometry> flatFeatureList(Geometry geom)
 	{
-		final List<Geometry> singleGeoms = new ArrayList<>();
-		final Stack<Geometry> geomStack = new Stack<>();
-
-		Geometry nextGeom;
-		int nextGeomCount;
-
+		final ArrayList<Geometry> singleGeoms = new ArrayList<Geometry>();
+		final Stack<Geometry> geomStack = new Stack<Geometry>();
 		geomStack.push(geom);
 		while (!geomStack.isEmpty())
 		{
-			nextGeom = geomStack.pop();
-
+			Geometry nextGeom = geomStack.pop();
 			if (nextGeom instanceof Point || nextGeom instanceof MultiPoint || nextGeom instanceof LineString
 					|| nextGeom instanceof MultiLineString || nextGeom instanceof Polygon
 					|| nextGeom instanceof MultiPolygon)
 			{
-
 				singleGeoms.add(nextGeom);
-
 			}
 			else if (nextGeom instanceof GeometryCollection)
 			{
-
 				// Push all child geometries
-				nextGeomCount = nextGeom.getNumGeometries();
+				int nextGeomCount = nextGeom.getNumGeometries();
 				for (int i = 0; i < nextGeomCount; ++i)
 				{
 					geomStack.push(nextGeom.getGeometryN(i));
 				}
-
 			}
 		}
-
 		return singleGeoms;
 	}
 
@@ -275,20 +330,17 @@ public final class JtsAdapter
 	 * @param dataGeoms geometry pre-passed through {@link #flatFeatureList(Geometry)}
 	 * @return list of geometry from {@code data} intersecting with {@code envelope}.
 	 */
-	private static List<Geometry> flatIntersection(Geometry envelope, List<Geometry> dataGeoms)
+	private static Collection<Geometry> flatIntersection(Geometry envelope, Collection<Geometry> dataGeoms)
 	{
-		final List<Geometry> intersectedGeoms = new ArrayList<>(dataGeoms.size());
-
+		ArrayList<Geometry> intersectedGeoms = new ArrayList<Geometry>(dataGeoms.size());
 		Geometry nextIntersected;
 		for (Geometry nextGeom : dataGeoms)
 		{
 			try
 			{
-
 				// AABB intersection culling
 				if (envelope.getEnvelopeInternal().intersects(nextGeom.getEnvelopeInternal()))
 				{
-
 					nextIntersected = envelope.intersection(nextGeom);
 					if (!nextIntersected.isEmpty())
 					{
@@ -296,14 +348,12 @@ public final class JtsAdapter
 						intersectedGeoms.add(nextIntersected);
 					}
 				}
-
 			}
 			catch (TopologyException e)
 			{
 				LoggerFactory.getLogger(JtsAdapter.class).error(e.getMessage(), e);
 			}
 		}
-
 		return intersectedGeoms;
 	}
 
@@ -315,7 +365,6 @@ public final class JtsAdapter
 	 */
 	private static int geomCmdBuffLenLines(int coordCount, boolean closeEnabled)
 	{
-
 		// MoveTo Header, LineTo Header, Optional ClosePath Header, 2 parameters * coordCount
 		return 2 + (closeEnabled ? 1 : 0) + (coordCount * 2);
 	}
@@ -327,7 +376,6 @@ public final class JtsAdapter
 	 */
 	private static int geomCmdBuffLenPts(int coordCount)
 	{
-
 		// 1 MoveTo Header, 2 parameters * coordCount
 		return 1 + (coordCount * 2);
 	}
@@ -349,25 +397,20 @@ public final class JtsAdapter
 	 * @param minLineToLen minimum allowed length for LineTo command.
 	 * @return list of commands
 	 */
-	private static List<Integer> linesToGeomCmds(final Geometry geom, final boolean closeEnabled, final Vec2d cursor,
-			final int minLineToLen)
+	private static Collection<Integer> linesToGeomCmds(final Geometry geom, final boolean closeEnabled,
+			final Vec2d cursor, final int minLineToLen)
 	{
-
-		final Coordinate[] geomCoords = geom.getCoordinates();
-
+		Coordinate[] geomCoords = geom.getCoordinates();
 		// Calculate the geometry coordinate count for processing that supports ignoring repeated final points
-		final int geomProcCoordCount;
+		int geomProcCoordCount;
 		if (closeEnabled)
 		{
-
 			// Check geometry for repeated end points when closing (Polygon rings)
-			final int repeatEndCoordCount = countCoordRepeatReverse(geomCoords);
+			int repeatEndCoordCount = countCoordRepeatReverse(geomCoords);
 			geomProcCoordCount = geomCoords.length - repeatEndCoordCount;
-
 		}
 		else
 		{
-
 			// No closing (Line strings)
 			geomProcCoordCount = geomCoords.length;
 		}
@@ -382,19 +425,16 @@ public final class JtsAdapter
 		final Vec2d origCursorPos = new Vec2d(cursor);
 
 		/** Tile commands and parameters */
-		final List<Integer> geomCmds = new ArrayList<>(geomCmdBuffLenLines(geomProcCoordCount, closeEnabled));
-
-		/** Holds next MVT coordinate */
-		final Vec2d mvtPos = new Vec2d();
+		final ArrayList<Integer> geomCmds = new ArrayList<Integer>(
+				geomCmdBuffLenLines(geomProcCoordCount, closeEnabled));
 
 		// Initial coordinate
 		Coordinate nextCoord = geomCoords[0];
-		mvtPos.setX((int) nextCoord.x);
-		mvtPos.setY((int) nextCoord.y);
+		/** Holds next MVT coordinate */
+		final Vec2d mvtPos = new Vec2d((int) nextCoord.x, (int) nextCoord.y);
 
 		// Encode initial 'MoveTo' command
 		geomCmds.add(MvtUtil.geomCmdHdr(GeomCmd.MoveTo, 1));
-
 		moveCursor(cursor, geomCmds, mvtPos);
 
 		/** Index of 'LineTo' 'command header' */
@@ -422,21 +462,16 @@ public final class JtsAdapter
 
 		if (lineToLength >= minLineToLen && lineToLength <= MvtUtil.GEOM_CMD_HDR_LEN_MAX)
 		{
-
 			// Write 'LineTo' 'command header'
 			geomCmds.set(lineToCmdHdrIndex, MvtUtil.geomCmdHdr(GeomCmd.LineTo, lineToLength));
-
 			if (closeEnabled)
 			{
 				geomCmds.add(MvtUtil.CLOSE_PATH_HDR);
 			}
-
 			return geomCmds;
-
 		}
 		else
 		{
-
 			// Revert cursor position
 			cursor.set(origCursorPos);
 
@@ -459,11 +494,10 @@ public final class JtsAdapter
 	 */
 	private static void moveCursor(Vec2d cursor, List<Integer> geomCmds, Vec2d mvtPos)
 	{
-
 		// Delta, then zigzag
 		geomCmds.add(MvtUtil.encodeZigZag(mvtPos.getX() - cursor.getX()));
 		geomCmds.add(MvtUtil.encodeZigZag(mvtPos.getY() - cursor.getY()));
-
+		// store new position
 		cursor.set(mvtPos);
 	}
 
@@ -481,54 +515,43 @@ public final class JtsAdapter
 	 */
 	private static List<Integer> ptsToGeomCmds(final Geometry geom, final Vec2d cursor)
 	{
-
 		// Guard: empty geometry coordinates
-		final Coordinate[] geomCoords = geom.getCoordinates();
-		if (geomCoords.length <= 0)
+		Coordinate[] geomCoords = geom.getCoordinates();
+		if (geomCoords.length == 0)
 		{
 			return Collections.emptyList();
 		}
 
 		/** Tile commands and parameters */
-		final List<Integer> geomCmds = new ArrayList<>(geomCmdBuffLenPts(geomCoords.length));
-
-		/** Holds next MVT coordinate */
-		final Vec2d mvtPos = new Vec2d();
-
+		ArrayList<Integer> geomCmds = new ArrayList<Integer>(geomCmdBuffLenPts(geomCoords.length));
 		/** Length of 'MoveTo' draw command */
 		int moveCmdLen = 0;
 
 		// Insert placeholder for 'MoveTo' command header
 		geomCmds.add(0);
 
-		Coordinate nextCoord;
-
 		for (int i = 0; i < geomCoords.length; ++i)
 		{
-			nextCoord = geomCoords[i];
-			mvtPos.setX((int) nextCoord.x);
-			mvtPos.setY((int) nextCoord.y);
+			Coordinate nextCoord = geomCoords[i];
+			Vec2d mvtPos = new Vec2d((int) nextCoord.x, (int) nextCoord.y);
 
 			// Ignore duplicate MVT points
 			if (i == 0 || !cursor.equals(mvtPos))
 			{
-				++moveCmdLen;
+				moveCmdLen++;
 				moveCursor(cursor, geomCmds, mvtPos);
 			}
 		}
 
 		if (moveCmdLen <= MvtUtil.GEOM_CMD_HDR_LEN_MAX)
 		{
-
 			// Write 'MoveTo' command header to first index
 			geomCmds.set(0, MvtUtil.geomCmdHdr(GeomCmd.MoveTo, moveCmdLen));
 
 			return geomCmds;
-
 		}
 		else
 		{
-
 			// Invalid geometry, need at least 1 'MoveTo' value to make points
 			return Collections.emptyList();
 		}
@@ -538,16 +561,14 @@ public final class JtsAdapter
 	 * Create and return a feature from a geometry. Returns null on failure.
 	 * @param geom flat geometry (in MVT coordinates) via {@link #flatFeatureList(Geometry)} that can be translated to a
 	 *            feature
-	 * @param cursor vector tile cursor position
 	 * @param layerProps layer properties for tagging features
 	 * @param userDataConverter
 	 * @return new tile feature instance, or null on failure
 	 */
 	@Nullable
-	private static VectorTile.Tile.Feature toFeature(Geometry geom, Vec2d cursor, MvtLayerProps layerProps,
+	private static VectorTile.Tile.Feature toFeature(Geometry geom, MvtLayerProps layerProps,
 			IUserDataConverter userDataConverter)
 	{
-
 		// Guard: UNKNOWN Geometry
 		final VectorTile.Tile.GeomType mvtGeomType = JtsAdapter.toGeomType(geom);
 		if (mvtGeomType == VectorTile.Tile.GeomType.UNKNOWN)
@@ -558,38 +579,30 @@ public final class JtsAdapter
 		final VectorTile.Tile.Feature.Builder featureBuilder = VectorTile.Tile.Feature.newBuilder();
 		// should the MVT geometry type be closed with a GeomCmd.ClosePath?
 		final boolean mvtClosePath = mvtGeomType == GeomType.POLYGON;
-		final List<Integer> mvtGeom = new ArrayList<>();
+		ArrayList<Integer> mvtGeom = new ArrayList<Integer>();
+		Vec2d cursor = new Vec2d();
 
 		featureBuilder.setType(mvtGeomType);
 
 		if (geom instanceof Point || geom instanceof MultiPoint)
 		{
-
 			// Encode as MVT point or multipoint
 			mvtGeom.addAll(ptsToGeomCmds(geom, cursor));
-
 		}
 		else if (geom instanceof LineString || geom instanceof MultiLineString)
 		{
-
 			// Encode as MVT linestring or multi-linestring
 			for (int i = 0; i < geom.getNumGeometries(); ++i)
 			{
 				mvtGeom.addAll(linesToGeomCmds(geom.getGeometryN(i), mvtClosePath, cursor, 1));
 			}
-
 		}
 		else if (geom instanceof MultiPolygon || geom instanceof Polygon)
 		{
-
 			// Encode as MVT polygon or multi-polygon
 			for (int i = 0; i < geom.getNumGeometries(); ++i)
 			{
-
 				final Polygon nextPoly = (Polygon) geom.getGeometryN(i);
-				final List<Integer> nextPolyGeom = new ArrayList<>();
-				boolean valid = true;
-
 				// Add exterior ring
 				final LineString exteriorRing = nextPoly.getExteriorRing();
 
@@ -608,8 +621,10 @@ public final class JtsAdapter
 					CoordinateArrays.reverse(exteriorRing.getCoordinates());
 				}
 
+				ArrayList<Integer> nextPolyGeom = new ArrayList<Integer>();
 				nextPolyGeom.addAll(linesToGeomCmds(exteriorRing, mvtClosePath, cursor, 2));
 
+				boolean valid = true;
 				// Add interior rings
 				for (int ringIndex = 0; ringIndex < nextPoly.getNumInteriorRing(); ++ringIndex)
 				{
@@ -648,60 +663,21 @@ public final class JtsAdapter
 			}
 		}
 
-		if (mvtGeom.size() < 1)
+		if (mvtGeom.isEmpty())
 		{
 			return null;
 		}
 
 		featureBuilder.addAllGeometry(mvtGeom);
 
-		// Feature Properties
-		userDataConverter.addTags(geom.getUserData(), layerProps, featureBuilder);
+		// add feature Properties?
+		Object userData = geom.getUserData();
+		if (userData != null)
+		{
+			userDataConverter.addTags(userData, layerProps, featureBuilder);
+		}
 
 		return featureBuilder.build();
-	}
-
-	/**
-	 * <p>
-	 * Convert a flat list of JTS {@link Geometry} to a list of vector tile features. The Geometry should be in MVT
-	 * coordinates.
-	 * </p>
-	 * <p>
-	 * Each geometry will have its own ID.
-	 * </p>
-	 * @param flatGeoms flat list of JTS geometry (in MVT coordinates) to convert
-	 * @param layerProps layer properties for tagging features
-	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags
-	 * @return features
-	 * @see #flatFeatureList(Geometry)
-	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
-	 */
-	public static List<VectorTile.Tile.Feature> toFeatures(Collection<Geometry> flatGeoms, MvtLayerProps layerProps,
-			IUserDataConverter userDataConverter)
-	{
-
-		// Guard: empty geometry
-		if (flatGeoms.isEmpty())
-		{
-			return Collections.emptyList();
-		}
-
-		final List<VectorTile.Tile.Feature> features = new ArrayList<>();
-		final Vec2d cursor = new Vec2d();
-
-		VectorTile.Tile.Feature nextFeature;
-
-		for (Geometry nextGeom : flatGeoms)
-		{
-			cursor.set(0, 0);
-			nextFeature = toFeature(nextGeom, cursor, layerProps, userDataConverter);
-			if (nextFeature != null)
-			{
-				features.add(nextFeature);
-			}
-		}
-
-		return features;
 	}
 
 	/**
@@ -718,10 +694,49 @@ public final class JtsAdapter
 	 * @see #flatFeatureList(Geometry)
 	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
 	 */
-	public static List<VectorTile.Tile.Feature> toFeatures(Geometry geometry, MvtLayerProps layerProps,
+	public static Collection<VectorTile.Tile.Feature> toFeatures(Geometry geometry, MvtLayerProps layerProps,
 			IUserDataConverter userDataConverter)
 	{
-		return toFeatures(flatFeatureList(geometry), layerProps, userDataConverter);
+		return toFeatures(collectFlatGeometries(geometry), layerProps, userDataConverter);
+	}
+
+	/**
+	 * <p>
+	 * Convert a flat list of JTS {@link Geometry} to a list of vector tile features. The Geometry should be in MVT
+	 * coordinates.
+	 * </p>
+	 * <p>
+	 * Each geometry will have its own ID.
+	 * </p>
+	 * @param flatGeometries flat list of JTS geometry (in MVT coordinates) to convert
+	 * @param layerProps layer properties for tagging features
+	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags
+	 * @return features
+	 * @see #flatFeatureList(Geometry)
+	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
+	 */
+	public static Collection<VectorTile.Tile.Feature> toFeatures(Iterable<Geometry> flatGeometries,
+			MvtLayerProps layerProps, IUserDataConverter userDataConverter)
+	{
+		// ensure to build a list of the correct size as there may be a large number of geometries
+		ArrayList<VectorTile.Tile.Feature> features;
+		if (flatGeometries instanceof Collection<?>)
+		{
+			features = new ArrayList<VectorTile.Tile.Feature>(((Collection<?>) flatGeometries).size());
+		}
+		else
+		{
+			features = new ArrayList<VectorTile.Tile.Feature>();
+		}
+		for (Geometry nextGeom : flatGeometries)
+		{
+			VectorTile.Tile.Feature nextFeature = toFeature(nextGeom, layerProps, userDataConverter);
+			if (nextFeature != null)
+			{
+				features.add(nextFeature);
+			}
+		}
+		return features;
 	}
 
 	/**
@@ -732,23 +747,19 @@ public final class JtsAdapter
 	 */
 	public static VectorTile.Tile.GeomType toGeomType(Geometry geometry)
 	{
-		VectorTile.Tile.GeomType result = VectorTile.Tile.GeomType.UNKNOWN;
-
 		if (geometry instanceof Point || geometry instanceof MultiPoint)
 		{
-			result = VectorTile.Tile.GeomType.POINT;
-
+			return VectorTile.Tile.GeomType.POINT;
 		}
 		else if (geometry instanceof LineString || geometry instanceof MultiLineString)
 		{
-			result = VectorTile.Tile.GeomType.LINESTRING;
+			return VectorTile.Tile.GeomType.LINESTRING;
 
 		}
 		else if (geometry instanceof Polygon || geometry instanceof MultiPolygon)
 		{
-			result = VectorTile.Tile.GeomType.POLYGON;
+			return VectorTile.Tile.GeomType.POLYGON;
 		}
-
-		return result;
+		return VectorTile.Tile.GeomType.UNKNOWN;
 	}
 }

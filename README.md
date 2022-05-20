@@ -18,7 +18,7 @@ This project allows encoding and decoding of MapBox Vector Tiles (MVT).
 * Provides MVT encoding through use of the Java Topology Suite (JTS).
 * All dependencies were upgraded to their latest version (including JTS)
 * Pull requests from the original source were integrated ([52](https://github.com/wdtinc/mapbox-vector-tile-java/pull/52) and [53](https://github.com/wdtinc/mapbox-vector-tile-java/pull/53))
-* Clean up code and small optimizations
+* Clean up of the code and optimizations
 * Support for JDK 11+
 * The license is still Apache-2.0
 
@@ -38,14 +38,14 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
-	<version>22.0.1</version>
+	<version>22.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.0.1'
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.1.0'
 ```
 
 ## Overview
@@ -53,6 +53,7 @@ compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.0.1'
 The version reflects the year of the release, e.g. `22.0.0` is a version released in 2022.
 
 The API differs a bit from [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) with the main point being a different namespace (`io.github.sebasbaumh.mapbox.vectortile`) as publishing a project to Maven Central requires to own that namespace.
+There are also some changes in the class structure, so make sure check your existing code for errors or deprecation warnings.
 
 ---
 *The following content is based on the original code in [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) and may not be fully up to date. It will be reworked step by step.*
