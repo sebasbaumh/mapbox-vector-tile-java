@@ -78,7 +78,8 @@ Envelope tileEnvelope = new Envelope(0d, WORLD_SIZE * .5d, 0d, WORLD_SIZE * .5d)
 // this is the geometry
 org.locationtech.jts.geom.Point point = geomFactory.createPoint(new Coordinate(12,45));
 // encode the geometry
-org.locationtech.jts.geom.Geometry tileGeom = JtsAdapter.createTileGeom(               point, tileEnvelope, geomFactory, mvtLayerParams, null);
+org.locationtech.jts.geom.Geometry tileGeom = JtsAdapter.createTileGeom(
+        point, tileEnvelope, geomFactory, mvtLayerParams, null);
 // add it to the layer builder
 mvtLayerBuilder.addAllFeatures(JtsAdapter.toFeatures(tileGeom, mvtLayerProps, null));
 
