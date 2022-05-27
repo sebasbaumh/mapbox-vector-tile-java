@@ -2,6 +2,7 @@ package io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.annotation.Nullable;
 
@@ -10,6 +11,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.locationtech.jts.geom.Geometry;
 
 import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerParams;
+import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 
 /**
  * <p>
@@ -67,16 +69,25 @@ public class JtsLayer
 		this.extent = extent;
 	}
 
+	/**
+	 * Create a JTS layer with geometries.
+	 * @param name layer name
+	 * @param geom
+	 * @throws IllegalArgumentException when {@code name} or {@code geometries} are null
+	 */
+	public JtsLayer(String name, Geometry geom)
+	{
+		this(name, Collections.singleton(geom), MvtLayerParams.DEFAULT.extent);
+	}
+
 	@Override
 	public boolean equals(@Nullable Object o)
 	{
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		JtsLayer layer = (JtsLayer) o;
-
-		if ((extent != layer.getExtent()) || (name != null ? !name.equals(layer.name) : layer.name != null)) return false;
-		return geometries != null ? geometries.equals(layer.geometries) : layer.geometries == null;
+		return (this.extent == layer.getExtent()) && name.equals(layer.name)
+				&& MvtUtil.equalsIterable(this.geometries, layer.geometries);
 	}
 
 	/**

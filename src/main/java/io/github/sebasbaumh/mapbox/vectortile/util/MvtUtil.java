@@ -1,5 +1,8 @@
 package io.github.sebasbaumh.mapbox.vectortile.util;
 
+import java.util.Iterator;
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import org.eclipse.jdt.annotation.DefaultLocation;
@@ -51,6 +54,40 @@ public final class MvtUtil
 	public static int encodeZigZag(int n)
 	{
 		return (n << 1) ^ (n >> 31);
+	}
+
+	/**
+	 * Checks, if the given {@link Iterable}s contain the same elements (in the same order).
+	 * @param la {@link Iterable} (can be null)
+	 * @param lb {@link Iterable} (can be null)
+	 * @return true on success, else false
+	 */
+	@SuppressWarnings("unlikely-arg-type")
+	public static <T, U> boolean equalsIterable(@Nullable Iterable<T> la, @Nullable Iterable<U> lb)
+	{
+		// check same instance
+		if (la == lb)
+		{
+			return true;
+		}
+		// iterables are different instances, so none of them should be null to proceed
+		if ((la == null) || (lb == null))
+		{
+			return false;
+		}
+		// walk through items
+		Iterator<T> it = la.iterator();
+		Iterator<U> it2 = lb.iterator();
+		while (it.hasNext() && it2.hasNext())
+		{
+			// check items
+			if (!Objects.equals(it.next(), it2.next()))
+			{
+				return false;
+			}
+		}
+		// make sure there are no more items
+		return !it.hasNext() && !it2.hasNext();
 	}
 
 	/**

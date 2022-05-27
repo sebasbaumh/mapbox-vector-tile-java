@@ -1,7 +1,8 @@
 package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 
 import java.util.Map;
-import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 import org.eclipse.jdt.annotation.DefaultLocation;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -21,19 +22,14 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 	/**
 	 * The {@link Map} key for the feature id.
 	 */
+	@Nullable
 	private final String idKey;
-
-	/**
-	 * If true, set feature id from user data.
-	 */
-	private final boolean setId;
 
 	/**
 	 * Does not set feature id.
 	 */
 	public UserDataKeyValueMapConverter()
 	{
-		this.setId = false;
 		this.idKey = null;
 	}
 
@@ -43,8 +39,6 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 	 */
 	public UserDataKeyValueMapConverter(String idKey)
 	{
-		Objects.requireNonNull(idKey);
-		this.setId = true;
 		this.idKey = idKey;
 	}
 
@@ -61,7 +55,7 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 				final String key = e.getKey();
 				final Object value = e.getValue();
 
-				if (key != null && value != null)
+				if ((key != null) && (value != null))
 				{
 					final int valueIndex = layerProps.addValue(value);
 
@@ -73,8 +67,8 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 				}
 			}
 
-			// Set feature id value
-			if (setId)
+			// Set feature id value?
+			if (idKey != null)
 			{
 				final Object idValue = userDataMap.get(idKey);
 				if (idValue != null)
@@ -105,7 +99,7 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 	@Override
 	public String toString()
 	{
-		return this.getClass().getSimpleName() + " [setId=" + setId + ", idKey=" + idKey + "]";
+		return this.getClass().getSimpleName() + " [idKey=" + idKey + "]";
 	}
 
 }

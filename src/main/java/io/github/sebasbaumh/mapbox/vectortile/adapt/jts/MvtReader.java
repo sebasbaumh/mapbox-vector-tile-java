@@ -62,7 +62,7 @@ public final class MvtReader
 	 * for forming Polygons and MultiPolygons.
 	 * @param file path to the MVT
 	 * @param geomFactory allows for JTS geometry creation
-	 * @param tagConverter converts MVT feature tags to JTS user data object
+	 * @param tagConverter converts MVT feature tags to JTS user data object (can be null for no converter)
 	 * @return JTS MVT with geometry in MVT coordinates
 	 * @throws IOException failure reading MVT from path
 	 * @see #loadMvt(InputStream, GeometryFactory, ITagConverter, RingClassifier)
@@ -70,7 +70,8 @@ public final class MvtReader
 	 * @see Geometry#getUserData()
 	 * @see RingClassifier
 	 */
-	public static JtsMvt loadMvt(File file, GeometryFactory geomFactory, ITagConverter tagConverter) throws IOException
+	public static JtsMvt loadMvt(File file, GeometryFactory geomFactory, @Nullable ITagConverter tagConverter)
+			throws IOException
 	{
 		return loadMvt(file, geomFactory, tagConverter, RING_CLASSIFIER_DEFAULT);
 	}
@@ -80,7 +81,7 @@ public final class MvtReader
 	 * {@link #loadMvt(InputStream, GeometryFactory, ITagConverter, RingClassifier)}.
 	 * @param file path to the MVT
 	 * @param geomFactory allows for JTS geometry creation
-	 * @param tagConverter converts MVT feature tags to JTS user data object
+	 * @param tagConverter converts MVT feature tags to JTS user data object (can be null for no converter)
 	 * @param ringClassifier determines how rings are parsed into Polygons and MultiPolygons
 	 * @return JTS MVT with geometry in MVT coordinates
 	 * @throws IOException failure reading MVT from path
@@ -89,7 +90,7 @@ public final class MvtReader
 	 * @see Geometry#getUserData()
 	 * @see RingClassifier
 	 */
-	public static JtsMvt loadMvt(File file, GeometryFactory geomFactory, ITagConverter tagConverter,
+	public static JtsMvt loadMvt(File file, GeometryFactory geomFactory, @Nullable ITagConverter tagConverter,
 			RingClassifier ringClassifier) throws IOException
 	{
 		final JtsMvt jtsMvt;
@@ -107,14 +108,14 @@ public final class MvtReader
 	 * properties.
 	 * @param is stream with MVT data
 	 * @param geomFactory allows for JTS geometry creation
-	 * @param tagConverter converts MVT feature tags to JTS user data object.
+	 * @param tagConverter converts MVT feature tags to JTS user data object (can be null for no converter)
 	 * @return JTS MVT with geometry in MVT coordinates
 	 * @throws IOException failure reading MVT from stream
 	 * @see Geometry
 	 * @see Geometry#getUserData()
 	 * @see RingClassifier
 	 */
-	public static JtsMvt loadMvt(InputStream is, GeometryFactory geomFactory, ITagConverter tagConverter)
+	public static JtsMvt loadMvt(InputStream is, GeometryFactory geomFactory, @Nullable ITagConverter tagConverter)
 			throws IOException
 	{
 		return loadMvt(is, geomFactory, tagConverter, RING_CLASSIFIER_DEFAULT);
@@ -125,7 +126,7 @@ public final class MvtReader
 	 * properties.
 	 * @param is stream with MVT data
 	 * @param geomFactory allows for JTS geometry creation
-	 * @param tagConverter converts MVT feature tags to JTS user data object.
+	 * @param tagConverter converts MVT feature tags to JTS user data object (can be null for no converter)
 	 * @param ringClassifier determines how rings are parsed into Polygons and MultiPolygons
 	 * @return JTS MVT with geometry in MVT coordinates
 	 * @throws IOException failure reading MVT from stream
@@ -133,7 +134,7 @@ public final class MvtReader
 	 * @see Geometry#getUserData()
 	 * @see RingClassifier
 	 */
-	public static JtsMvt loadMvt(InputStream is, GeometryFactory geomFactory, ITagConverter tagConverter,
+	public static JtsMvt loadMvt(InputStream is, GeometryFactory geomFactory, @Nullable ITagConverter tagConverter,
 			RingClassifier ringClassifier) throws IOException
 	{
 
@@ -165,7 +166,11 @@ public final class MvtReader
 				final Geometry nextGeom = readGeometry(geomCmds, geomType, geomFactory, cursor, ringClassifier);
 				if (nextGeom != null)
 				{
-					nextGeom.setUserData(tagConverter.toUserData(id, nextFeature.getTagsList(), keysList, valuesList));
+					if (tagConverter != null)
+					{
+						nextGeom.setUserData(
+								tagConverter.toUserData(id, nextFeature.getTagsList(), keysList, valuesList));
+					}
 					layerGeoms.add(nextGeom);
 				}
 			}
@@ -260,7 +265,8 @@ public final class MvtReader
 			// Guard: command type and length
 			// Guard: header data length unsupported by geometry command buffer
 			// (require at least (1 value * 2 params) + current_index)
-			if (cmd != GeomCmd.LineTo || cmdLength < 1 || ((cmdLength * GeomCmd.LineTo.getParamCount()) + i > geomCmds.size()))
+			if (cmd != GeomCmd.LineTo || cmdLength < 1
+					|| ((cmdLength * GeomCmd.LineTo.getParamCount()) + i > geomCmds.size()))
 			{
 				break;
 			}
@@ -410,7 +416,8 @@ public final class MvtReader
 			// Guard: command type and length
 			// Guard: header data length unsupported by geometry command buffer
 			// (require at least (2 values * 2 params) + (current index 'i') + (1 for ClosePath))
-			if (cmd != GeomCmd.LineTo || cmdLength < 2 || ((cmdLength * GeomCmd.LineTo.getParamCount()) + i + 1 > geomCmds.size()))
+			if (cmd != GeomCmd.LineTo || cmdLength < 2
+					|| ((cmdLength * GeomCmd.LineTo.getParamCount()) + i + 1 > geomCmds.size()))
 			{
 				break;
 			}

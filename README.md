@@ -18,9 +18,9 @@ This project allows encoding and decoding of MapBox Vector Tiles (MVT).
 * Provides MVT encoding through use of the Java Topology Suite (JTS).
 * All dependencies were upgraded to their latest version (including JTS)
 * Pull requests from the original source were integrated ([52](https://github.com/wdtinc/mapbox-vector-tile-java/pull/52) and [53](https://github.com/wdtinc/mapbox-vector-tile-java/pull/53))
-* Clean up of the code and optimizations
+* Clean up of the code and optimizations (use null annotations and streamline flow)
 * Support for JDK 11+
-* The license is still Apache-2.0
+* The license is still [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ### See also:
 
@@ -38,22 +38,57 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
-	<version>22.1.0</version>
+	<version>22.2.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.1.0'
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.2.0'
 ```
 
 ## Overview
 
 The version reflects the year of the release, e.g. `22.0.0` is a version released in 2022.
 
+### Changes from to the original [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java)
+
 The API differs a bit from [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) with the main point being a different namespace (`io.github.sebasbaumh.mapbox.vectortile`) as publishing a project to Maven Central requires to own that namespace.
-There are also some changes in the class structure, so make sure check your existing code for errors or deprecation warnings.
+
+Especially [`JtsAdapter`](https://github.com/sebasbaumh/mapbox-vector-tile-java/blob/main/src/main/java/io/github/sebasbaumh/mapbox/vectortile/adapt/jts/JtsAdapter.java) has been reworked and optimized. Usually you can just move from `addAllFeatures`/`toFeatures` to `addFeatures` instead.
+
+There are also some changes in the class structure, so make sure check your existing code for errors or deprecation warnings. For converters and filters it is now possible to use `null` values to use none/ignore them.
+
+## Usage
+
+### Encoding vector tiles
+
+Example for encoding a JTS geometry to a vector tile as `byte[]`:
+```java
+// prepare helper classes
+GeometryFactory geomFactory = new GeometryFactory();
+MvtLayerProps mvtLayerProps = new MvtLayerProps();
+MvtLayerParams mvtLayerParams = new MvtLayerParams();
+VectorTile.Tile.Layer.Builder mvtLayerBuilder = MvtUtil.newLayerBuilder("test", mvtLayerParams);
+
+// build tile envelope - 1 quadrant of the world
+Envelope tileEnvelope = new Envelope(0d, WORLD_SIZE * .5d, 0d, WORLD_SIZE * .5d);
+
+// this is the geometry
+org.locationtech.jts.geom.Point point = geomFactory.createPoint(new Coordinate(12,45));
+// encode the geometry
+org.locationtech.jts.geom.Geometry tileGeom = JtsAdapter.createTileGeom(               point, tileEnvelope, geomFactory, mvtLayerParams, null);
+// add it to the layer builder
+mvtLayerBuilder.addAllFeatures(JtsAdapter.toFeatures(tileGeom, mvtLayerProps, null));
+
+// finish writing of features
+MvtUtil.writeProps(mvtLayerBuilder, mvtLayerProps);
+VectorTile.Tile.Builder mvtBuilder = VectorTile.Tile.newBuilder();
+mvtBuilder.addLayers(mvtLayerBuilder.build());
+// build the vector tile (here as byte array)
+byte[] mvtData = mvtBuilder.build().toByteArray();
+```
 
 ---
 *The following content is based on the original code in [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) and may not be fully up to date. It will be reworked step by step.*
@@ -61,15 +96,12 @@ There are also some changes in the class structure, so make sure check your exis
 Contents
 
 - [Overview](#overview)
-    - [Dependency](#dependency)
     - [Reading MVTs](#reading-mvts)
     - [Building and Writing MVTs](#building-and-writing-mvts)
     - [Buffering Polygons Beyond MVT Extent](#buffering-polygons-beyond-mvt-extent)
 - [Examples](#examples)
 - [Generate VectorTile class using .proto](#how-to-generate-vectortile-class-using-vector_tile.proto)
-- [Issues](#issues)
-- [Contributing](#contributing)
-- [License](#license)
+- [Known Issues](#known-issues)
 
 ## Overview
 
@@ -268,17 +300,7 @@ These options were added to the .proto file:
  * option java_package = "io.github.sebasbaumh.mapbox.vectortile";
  * option java_outer_classname = "VectorTile";
 
-## Issues
-
-#### Reporting
-
-Use the Github issue tracker.
-
-#### Known Issues
+## Known Issues
 
  * Creating tile geometry with non-simple line strings that self-cross in many places will be 'noded' by JTS during an intersection operation. This results in ugly output.
  * Invalid or non-simple geometry may not work correctly with JTS operations when creating tile geometry.
- 
-## License
-
-http://www.apache.org/licenses/LICENSE-2.0.html

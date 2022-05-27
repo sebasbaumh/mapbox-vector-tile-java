@@ -77,7 +77,7 @@ public final class MvtEncoder
 			// Create MVT layer
 			VectorTile.Tile.Layer.Builder layerBuilder = MvtUtil.newLayerBuilder(layer.getName(), mvtLayerParams);
 			MvtLayerProps layerProps = new MvtLayerProps();
-			layerBuilder.addAllFeatures(JtsAdapter.toFeatures(layer.getGeometries(), layerProps, userDataConverter));
+			JtsAdapter.addFeatures(layerBuilder, layer.getGeometries(), layerProps, userDataConverter);
 			MvtUtil.writeProps(layerBuilder, layerProps);
 
 			// Build MVT layer

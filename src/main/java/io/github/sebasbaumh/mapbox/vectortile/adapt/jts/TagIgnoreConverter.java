@@ -12,7 +12,9 @@ import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
 /**
  * Ignores tags, always returns null.
  * @see ITagConverter
+ * @deprecated use a <code>null</code> value for {@link ITagConverter} parameters instead
  */
+@Deprecated
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public class TagIgnoreConverter implements ITagConverter
 {

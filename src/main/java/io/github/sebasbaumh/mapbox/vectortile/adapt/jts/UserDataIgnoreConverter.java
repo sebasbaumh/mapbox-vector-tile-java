@@ -9,7 +9,9 @@ import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
 /**
  * Ignores user data, does not take any action.
  * @see IUserDataConverter
+ * @deprecated use a <code>null</code> value for {@link IUserDataConverter} parameters instead
  */
+@Deprecated
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public class UserDataIgnoreConverter implements IUserDataConverter
 {

@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collection;
 
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -21,18 +23,17 @@ import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 /**
  * Manual test for ensuring linestring geometry does not miss segments on the end.
  */
+@SuppressWarnings({ "javadoc" })
 public class JtsAdapterIssue27Test
 {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	public static void main(String args[]) throws IOException, ParseException
-	{
-		testLineStringMisssingEndSegments();
-	}
-
-	public static void testLineStringMisssingEndSegments() throws IOException, ParseException
+	@Test
+	public void testLineStringMisssingEndSegments() throws IOException, ParseException
 	{
 		final File wktFile = new File("src/test/resources/wkt/github_issue_27_01_multilinestring.wkt");
-		final File outputFile = new File("linestring.mvt");
+		final File outputFile = tempFolder.newFile();
 		final GeometryFactory gf = new GeometryFactory();
 		final WKTReader reader = new WKTReader(gf);
 		final MvtLayerParams mvtLayerParams = MvtLayerParams.DEFAULT;
@@ -41,14 +42,12 @@ public class JtsAdapterIssue27Test
 		{
 			final Geometry wktGeom = reader.read(fileReader);
 			final Envelope env = new Envelope(545014.05D, 545043.15D, 6867178.74D, 6867219.47D);
-			Collection<Geometry> tileGeom = JtsAdapter.createTileGeom(wktGeom, env, gf, mvtLayerParams, g -> true);
+			Geometry tileGeom = JtsAdapter.createTileGeom(wktGeom, env, gf, mvtLayerParams, g -> true);
 
 			final MvtLayerProps mvtLayerProps = new MvtLayerProps();
 			final VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();
 			final VectorTile.Tile.Layer.Builder layerBuilder = MvtUtil.newLayerBuilder("myLayerName", mvtLayerParams);
-			final Collection<VectorTile.Tile.Feature> features = JtsAdapter.toFeatures(tileGeom, mvtLayerProps,
-					new UserDataIgnoreConverter());
-			layerBuilder.addAllFeatures(features);
+			JtsAdapter.addFeatures(layerBuilder, tileGeom, mvtLayerProps, null);
 			MvtUtil.writeProps(layerBuilder, mvtLayerProps);
 			tileBuilder.addLayers(layerBuilder);
 
@@ -62,7 +61,7 @@ public class JtsAdapterIssue27Test
 				LoggerFactory.getLogger(JtsAdapterIssue27Test.class).error(e.getMessage(), e);
 			}
 
-			MvtReader.loadMvt(outputFile, gf, new TagIgnoreConverter());
+			MvtReader.loadMvt(outputFile, gf, null);
 		}
 	}
 }

@@ -3,8 +3,8 @@ package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +26,6 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.TopologyException;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
-import org.slf4j.LoggerFactory;
 
 import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
 import io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.GeomType;
@@ -42,6 +41,55 @@ import io.github.sebasbaumh.mapbox.vectortile.util.Vec2d;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public final class JtsAdapter
 {
+	/**
+	 * Adds features for the given geometry to the given layer builder.
+	 * @param layerBuilder layer builder to write to
+	 * @param geometry JTS geometry to convert
+	 * @param layerProps layer properties for tagging features
+	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
+	 */
+	public static void addFeatures(VectorTile.Tile.Layer.Builder layerBuilder, Geometry geometry,
+			MvtLayerProps layerProps, @Nullable IUserDataConverter userDataConverter)
+	{
+		// short cut for simple geometries
+		if (!(geometry instanceof GeometryCollection))
+		{
+			VectorTile.Tile.Feature nextFeature = toFeature(geometry, layerProps, userDataConverter);
+			if (nextFeature != null)
+			{
+				layerBuilder.addFeatures(nextFeature);
+			}
+		}
+		else
+		{
+			// split up the features
+			Collection<Geometry> geometries = collectFlatGeometries(geometry);
+			addFeatures(layerBuilder, geometries, layerProps, userDataConverter);
+		}
+	}
+
+	/**
+	 * Adds features for the given geometry to the given layer builder.
+	 * @param layerBuilder layer builder to write to
+	 * @param geometries JTS geometries to convert
+	 * @param layerProps layer properties for tagging features
+	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
+	 */
+	public static void addFeatures(VectorTile.Tile.Layer.Builder layerBuilder, Iterable<Geometry> geometries,
+			MvtLayerProps layerProps, @Nullable IUserDataConverter userDataConverter)
+	{
+		for (Geometry geom : geometries)
+		{
+			VectorTile.Tile.Feature nextFeature = toFeature(geom, layerProps, userDataConverter);
+			if (nextFeature != null)
+			{
+				layerBuilder.addFeatures(nextFeature);
+			}
+		}
+	}
+
 	/**
 	 * <p>
 	 * Recursively convert a {@link Geometry}, which may be an instance of {@link GeometryCollection} with mixed element
@@ -64,8 +112,15 @@ public final class JtsAdapter
 	 * @param geom geometry to flatten
 	 * @return list of MVT-feature-ready geometries
 	 */
-	public static Collection<Geometry> collectFlatGeometries(Geometry geom)
+	private static Collection<Geometry> collectFlatGeometries(Geometry geom)
 	{
+		// short cut for simple geometries
+		if (geom instanceof Point || geom instanceof MultiPoint || geom instanceof LineString
+				|| geom instanceof MultiLineString || geom instanceof Polygon || geom instanceof MultiPolygon)
+		{
+			return Collections.singleton(geom);
+		}
+		// collect geometries from geometry collection
 		ArrayList<Geometry> singleGeoms = new ArrayList<Geometry>();
 		collectFlatGeometries(geom, singleGeoms);
 		return singleGeoms;
@@ -115,7 +170,7 @@ public final class JtsAdapter
 			nextCoord = coords[i];
 			if (equalAsInts2d(firstCoord, nextCoord))
 			{
-				++repeatCoords;
+				repeatCoords++;
 			}
 			else
 			{
@@ -126,25 +181,22 @@ public final class JtsAdapter
 	}
 
 	/**
+	 * Create geometry clipped and then converted to MVT 'extent' coordinates.
 	 * <p>
-	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
-	 * (intersection) and transformed geometry for encoding to MVT.
+	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
+	 * geometry depending on styling.
 	 * </p>
-	 * <p>
-	 * Allows specifying separate tile and clipping coordinates. {@code clipEnvelope} can be bigger than
-	 * {@code tileEnvelope} to have geometry exist outside the MVT tile extent.
-	 * </p>
-	 * @param flatGeometries original 'source' geometry, passed through {@link #flatFeatureList(Geometry)}
-	 * @param tileEnvelope world coordinate bounds for tile, used for transforms
+	 * @param geom original 'source' geometry
+	 * @param tileEnvelope world coordinate bounds for tile
 	 * @param clipEnvelope world coordinates to clip tile by
 	 * @param geomFactory creates a geometry for the tile envelope
 	 * @param mvtLayerParams specifies vector tile properties
 	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
-	 * @return tile geometries
+	 * @return tile geometry
+	 * @throws TopologyException if a robustness error occurs
 	 */
-	public static Collection<Geometry> createTileGeom(Collection<Geometry> flatGeometries, Envelope tileEnvelope,
-			Envelope clipEnvelope, GeometryFactory geomFactory, MvtLayerParams mvtLayerParams,
-			@Nullable IGeometryFilter filter)
+	public static Geometry createTileGeom(Geometry geom, Envelope tileEnvelope, Envelope clipEnvelope,
+			GeometryFactory geomFactory, MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
 	{
 		double xDiff = tileEnvelope.getWidth();
 		double yDiff = tileEnvelope.getHeight();
@@ -162,10 +214,29 @@ public final class JtsAdapter
 
 		// The area contained in BOTH the 'original geometry', g, AND the 'clip envelope geometry' is the 'tile
 		// geometry'
-		Geometry tileClipGeom = geomFactory.toGeometry(clipEnvelope);
-		Collection<Geometry> intersectedGeoms = flatIntersection(tileClipGeom, flatGeometries);
-		ArrayList<Geometry> transformedGeoms = new ArrayList<Geometry>(intersectedGeoms.size());
+		Geometry clipEnvelopeGeometry = geomFactory.toGeometry(clipEnvelope);
 
+		// work around issues with JTS 1.14 not supporting intersection on a GeometryCollection by collecting all
+		// contained geometries
+		Collection<Geometry> flatGeometries = collectFlatGeometries(geom);
+		// now intersect them with the tile
+		ArrayList<Geometry> intersectedGeoms = new ArrayList<Geometry>(flatGeometries.size());
+		for (Geometry flatGeom : flatGeometries)
+		{
+			// AABB intersection culling
+			if (clipEnvelope.intersects(flatGeom.getEnvelopeInternal()))
+			{
+				Geometry nextIntersected = clipEnvelopeGeometry.intersection(flatGeom);
+				if (!nextIntersected.isEmpty())
+				{
+					// copy user data
+					nextIntersected.setUserData(flatGeom.getUserData());
+					intersectedGeoms.add(nextIntersected);
+				}
+			}
+		}
+
+		ArrayList<Geometry> transformedGeoms = new ArrayList<Geometry>(intersectedGeoms.size());
 		// Transform intersected geometry
 		Geometry nextTransformGeom;
 		for (Geometry nextInterGeom : intersectedGeoms)
@@ -180,65 +251,25 @@ public final class JtsAdapter
 			// TODO: Refactor line simplification
 			nextTransformGeom = TopologyPreservingSimplifier.simplify(nextTransformGeom, .1d); // Can't use 0d, specify
 																								// value < .5d
-			// copy user data (if any)
-			nextTransformGeom.setUserData(nextUserData);
-
 			// Apply filter on transformed geometry (if any)
 			if ((filter == null) || filter.accept(nextTransformGeom))
 			{
+				// copy user data (if any) and remember transformed geometry
+				nextTransformGeom.setUserData(nextUserData);
 				transformedGeoms.add(nextTransformGeom);
 			}
 		}
-		return transformedGeoms;
+		// check if there is only a single geometry
+		if (transformedGeoms.size() == 1)
+		{
+			return transformedGeoms.get(0);
+		}
+		// build a collection out of the transformed geometries
+		return new GeometryCollection(transformedGeoms.toArray(new Geometry[transformedGeoms.size()]), geomFactory);
 	}
 
 	/**
-	 * <p>
-	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
-	 * (intersection) and transformed geometry for encoding to MVT.
-	 * </p>
-	 * <p>
-	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
-	 * geometry depending on styling.
-	 * </p>
-	 * @param flatGeometries original 'source' geometry, passed through {@link #flatFeatureList(Geometry)}
-	 * @param tileEnvelope world coordinate bounds for tile
-	 * @param geomFactory creates a geometry for the tile envelope
-	 * @param mvtLayerParams specifies vector tile properties
-	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
-	 * @return tile geometries
-	 */
-	public static Collection<Geometry> createTileGeom(Collection<Geometry> flatGeometries, Envelope tileEnvelope,
-			GeometryFactory geomFactory, MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
-	{
-		return createTileGeom(flatGeometries, tileEnvelope, tileEnvelope, geomFactory, mvtLayerParams, filter);
-	}
-
-	/**
-	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
-	 * (intersection) and transformed geometry for encoding to MVT.
-	 * <p>
-	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
-	 * geometry depending on styling.
-	 * </p>
-	 * @param geom original 'source' geometry
-	 * @param tileEnvelope world coordinate bounds for tile
-	 * @param clipEnvelope world coordinates to clip tile by
-	 * @param geomFactory creates a geometry for the tile envelope
-	 * @param mvtLayerParams specifies vector tile properties
-	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
-	 * @return tile geometries
-	 */
-	public static Collection<Geometry> createTileGeom(Geometry geom, Envelope tileEnvelope, Envelope clipEnvelope,
-			GeometryFactory geomFactory, MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
-	{
-		return createTileGeom(collectFlatGeometries(geom), tileEnvelope, clipEnvelope, geomFactory, mvtLayerParams,
-				filter);
-	}
-
-	/**
-	 * Create geometry clipped and then converted to MVT 'extent' coordinates. Result contains both clipped geometry
-	 * (intersection) and transformed geometry for encoding to MVT.
+	 * Create geometry clipped and then converted to MVT 'extent' coordinates.
 	 * <p>
 	 * Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons or line
 	 * geometry depending on styling.
@@ -248,13 +279,12 @@ public final class JtsAdapter
 	 * @param geomFactory creates a geometry for the tile envelope
 	 * @param mvtLayerParams specifies vector tile properties
 	 * @param filter geometry values that fail filter after transforms are removed (can be null for no filter)
-	 * @return tile geometries
+	 * @return tile geometry
 	 */
-	public static Collection<Geometry> createTileGeom(Geometry geom, Envelope tileEnvelope, GeometryFactory geomFactory,
+	public static Geometry createTileGeom(Geometry geom, Envelope tileEnvelope, GeometryFactory geomFactory,
 			MvtLayerParams mvtLayerParams, @Nullable IGeometryFilter filter)
 	{
-		return createTileGeom(collectFlatGeometries(geom), tileEnvelope, tileEnvelope, geomFactory, mvtLayerParams,
-				filter);
+		return createTileGeom(geom, tileEnvelope, tileEnvelope, geomFactory, mvtLayerParams, filter);
 	}
 
 	/**
@@ -269,92 +299,6 @@ public final class JtsAdapter
 	{
 		return ((int) a.getOrdinate(0)) == ((int) b.getOrdinate(0))
 				&& ((int) a.getOrdinate(1)) == ((int) b.getOrdinate(1));
-	}
-
-	/**
-	 * <p>
-	 * Recursively convert a {@link Geometry}, which may be an instance of {@link GeometryCollection} with mixed element
-	 * types, into a flat list containing only the following {@link Geometry} types:
-	 * </p>
-	 * <ul>
-	 * <li>{@link Point}</li>
-	 * <li>{@link LineString}</li>
-	 * <li>{@link Polygon}</li>
-	 * <li>{@link MultiPoint}</li>
-	 * <li>{@link MultiLineString}</li>
-	 * <li>{@link MultiPolygon}</li>
-	 * </ul>
-	 * <p>
-	 * WARNING: Any other Geometry types that were not mentioned in the list above will be discarded!
-	 * </p>
-	 * <p>
-	 * Useful for converting a generic geometry into a list of simple MVT-feature-ready geometries.
-	 * </p>
-	 * @param geom geometry to flatten
-	 * @return list of MVT-feature-ready geometries
-	 * @deprecated use {@link #collectFlatGeometries(Geometry)} instead
-	 */
-	@Deprecated
-	public static List<Geometry> flatFeatureList(Geometry geom)
-	{
-		final ArrayList<Geometry> singleGeoms = new ArrayList<Geometry>();
-		final Stack<Geometry> geomStack = new Stack<Geometry>();
-		geomStack.push(geom);
-		while (!geomStack.isEmpty())
-		{
-			Geometry nextGeom = geomStack.pop();
-			if (nextGeom instanceof Point || nextGeom instanceof MultiPoint || nextGeom instanceof LineString
-					|| nextGeom instanceof MultiLineString || nextGeom instanceof Polygon
-					|| nextGeom instanceof MultiPolygon)
-			{
-				singleGeoms.add(nextGeom);
-			}
-			else if (nextGeom instanceof GeometryCollection)
-			{
-				// Push all child geometries
-				int nextGeomCount = nextGeom.getNumGeometries();
-				for (int i = 0; i < nextGeomCount; ++i)
-				{
-					geomStack.push(nextGeom.getGeometryN(i));
-				}
-			}
-		}
-		return singleGeoms;
-	}
-
-	/**
-	 * JTS 1.14 does not support intersection on a {@link GeometryCollection}. This function works around this by
-	 * performing intersection on a flat list of geometry. The resulting list is pre-filtered for invalid or empty
-	 * geometry (outside of bounds). Invalid geometry are logged as errors.
-	 * @param envelope non-list geometry defines bounding area
-	 * @param dataGeoms geometry pre-passed through {@link #flatFeatureList(Geometry)}
-	 * @return list of geometry from {@code data} intersecting with {@code envelope}.
-	 */
-	private static Collection<Geometry> flatIntersection(Geometry envelope, Collection<Geometry> dataGeoms)
-	{
-		ArrayList<Geometry> intersectedGeoms = new ArrayList<Geometry>(dataGeoms.size());
-		Geometry nextIntersected;
-		for (Geometry nextGeom : dataGeoms)
-		{
-			try
-			{
-				// AABB intersection culling
-				if (envelope.getEnvelopeInternal().intersects(nextGeom.getEnvelopeInternal()))
-				{
-					nextIntersected = envelope.intersection(nextGeom);
-					if (!nextIntersected.isEmpty())
-					{
-						nextIntersected.setUserData(nextGeom.getUserData());
-						intersectedGeoms.add(nextIntersected);
-					}
-				}
-			}
-			catch (TopologyException e)
-			{
-				LoggerFactory.getLogger(JtsAdapter.class).error(e.getMessage(), e);
-			}
-		}
-		return intersectedGeoms;
 	}
 
 	/**
@@ -559,15 +503,14 @@ public final class JtsAdapter
 
 	/**
 	 * Create and return a feature from a geometry. Returns null on failure.
-	 * @param geom flat geometry (in MVT coordinates) via {@link #flatFeatureList(Geometry)} that can be translated to a
-	 *            feature
+	 * @param geom flat geometry (in MVT coordinates) that can be translated to a feature
 	 * @param layerProps layer properties for tagging features
-	 * @param userDataConverter
+	 * @param userDataConverter (can be null for no converter)
 	 * @return new tile feature instance, or null on failure
 	 */
 	@Nullable
 	private static VectorTile.Tile.Feature toFeature(Geometry geom, MvtLayerProps layerProps,
-			IUserDataConverter userDataConverter)
+			@Nullable IUserDataConverter userDataConverter)
 	{
 		// Guard: UNKNOWN Geometry
 		final VectorTile.Tile.GeomType mvtGeomType = JtsAdapter.toGeomType(geom);
@@ -671,13 +614,72 @@ public final class JtsAdapter
 		featureBuilder.addAllGeometry(mvtGeom);
 
 		// add feature Properties?
-		Object userData = geom.getUserData();
-		if (userData != null)
+		if (userDataConverter != null)
 		{
-			userDataConverter.addTags(userData, layerProps, featureBuilder);
+			Object userData = geom.getUserData();
+			if (userData != null)
+			{
+				userDataConverter.addTags(userData, layerProps, featureBuilder);
+			}
 		}
-
 		return featureBuilder.build();
+	}
+
+	/**
+	 * <p>
+	 * Convert a flat list of JTS {@link Geometry} to a list of vector tile features. The Geometry should be in MVT
+	 * coordinates.
+	 * </p>
+	 * <p>
+	 * Each geometry will have its own ID.
+	 * </p>
+	 * @param geometries list of JTS geometry (in MVT coordinates) to convert
+	 * @param layerProps layer properties for tagging features
+	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
+	 * @return features
+	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
+	 * @see #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry, MvtLayerProps,
+	 *      IUserDataConverter)
+	 * @deprecated use #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry,
+	 *             MvtLayerProps, IUserDataConverter) instead
+	 */
+	@Deprecated
+	public static Collection<VectorTile.Tile.Feature> toFeatures(Collection<Geometry> geometries,
+			MvtLayerProps layerProps, @Nullable IUserDataConverter userDataConverter)
+	{
+		// check if there is a geometry at all
+		Iterator<Geometry> it = geometries.iterator();
+		if (!it.hasNext())
+		{
+			return Collections.emptyList();
+		}
+		Geometry geomFirst = it.next();
+		// check if there is only a single geometry (and no complex collection)
+		if (!it.hasNext() && !(geomFirst instanceof GeometryCollection))
+		{
+			VectorTile.Tile.Feature nextFeature = toFeature(geomFirst, layerProps, userDataConverter);
+			if (nextFeature != null)
+			{
+				return Collections.singleton(nextFeature);
+			}
+			else
+			{
+				return Collections.emptyList();
+			}
+		}
+		// ensure to build a list of the correct size as there may be a large number of geometries
+		ArrayList<VectorTile.Tile.Feature> features = new ArrayList<VectorTile.Tile.Feature>(
+				((Collection<?>) geometries).size());
+		for (Geometry nextGeom : geometries)
+		{
+			VectorTile.Tile.Feature nextFeature = toFeature(nextGeom, layerProps, userDataConverter);
+			if (nextFeature != null)
+			{
+				features.add(nextFeature);
+			}
+		}
+		return features;
 	}
 
 	/**
@@ -689,54 +691,34 @@ public final class JtsAdapter
 	 * </p>
 	 * @param geometry JTS geometry to convert
 	 * @param layerProps layer properties for tagging features
-	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags
+	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
 	 * @return features
-	 * @see #flatFeatureList(Geometry)
 	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
+	 * @see #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry, MvtLayerProps,
+	 *      IUserDataConverter)
+	 * @deprecated use #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry,
+	 *             MvtLayerProps, IUserDataConverter) instead
 	 */
+	@Deprecated
 	public static Collection<VectorTile.Tile.Feature> toFeatures(Geometry geometry, MvtLayerProps layerProps,
-			IUserDataConverter userDataConverter)
+			@Nullable IUserDataConverter userDataConverter)
 	{
-		return toFeatures(collectFlatGeometries(geometry), layerProps, userDataConverter);
-	}
-
-	/**
-	 * <p>
-	 * Convert a flat list of JTS {@link Geometry} to a list of vector tile features. The Geometry should be in MVT
-	 * coordinates.
-	 * </p>
-	 * <p>
-	 * Each geometry will have its own ID.
-	 * </p>
-	 * @param flatGeometries flat list of JTS geometry (in MVT coordinates) to convert
-	 * @param layerProps layer properties for tagging features
-	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags
-	 * @return features
-	 * @see #flatFeatureList(Geometry)
-	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
-	 */
-	public static Collection<VectorTile.Tile.Feature> toFeatures(Iterable<Geometry> flatGeometries,
-			MvtLayerProps layerProps, IUserDataConverter userDataConverter)
-	{
-		// ensure to build a list of the correct size as there may be a large number of geometries
-		ArrayList<VectorTile.Tile.Feature> features;
-		if (flatGeometries instanceof Collection<?>)
+		// short cut
+		if (!(geometry instanceof GeometryCollection))
 		{
-			features = new ArrayList<VectorTile.Tile.Feature>(((Collection<?>) flatGeometries).size());
-		}
-		else
-		{
-			features = new ArrayList<VectorTile.Tile.Feature>();
-		}
-		for (Geometry nextGeom : flatGeometries)
-		{
-			VectorTile.Tile.Feature nextFeature = toFeature(nextGeom, layerProps, userDataConverter);
+			VectorTile.Tile.Feature nextFeature = toFeature(geometry, layerProps, userDataConverter);
 			if (nextFeature != null)
 			{
-				features.add(nextFeature);
+				return Collections.singleton(nextFeature);
+			}
+			else
+			{
+				return Collections.emptyList();
 			}
 		}
-		return features;
+		// use implementation for multiple features and collect flat geometries upfront
+		return toFeatures(collectFlatGeometries(geometry), layerProps, userDataConverter);
 	}
 
 	/**
