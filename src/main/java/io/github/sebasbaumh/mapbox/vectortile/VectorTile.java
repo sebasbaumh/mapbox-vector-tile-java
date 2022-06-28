@@ -3,6 +3,7 @@
 
 package io.github.sebasbaumh.mapbox.vectortile;
 
+@SuppressWarnings({"javadoc", "unchecked"})
 public final class VectorTile {
   private VectorTile() {}
   public static void registerAllExtensions(

@@ -38,14 +38,14 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
-	<version>22.2.0</version>
+	<version>22.2.1</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.2.0'
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.2.1'
 ```
 
 ## Overview
