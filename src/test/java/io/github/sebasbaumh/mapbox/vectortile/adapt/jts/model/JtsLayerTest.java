@@ -1,7 +1,7 @@
 package io.github.sebasbaumh.mapbox.vectortile.adapt.jts.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -61,10 +61,10 @@ public final class JtsLayerTest
 	{
 		JtsLayer layer1 = new JtsLayer("apples");
 		JtsLayer layer1Duplicate = new JtsLayer("apples");
-		assertTrue(layer1.equals(layer1Duplicate));
+		assertEquals(layer1, layer1Duplicate);
 
 		JtsLayer layer2 = new JtsLayer("oranges");
-		assertFalse(layer1.equals(layer2));
+		assertNotEquals(layer1, layer2);
 	}
 
 	@Test

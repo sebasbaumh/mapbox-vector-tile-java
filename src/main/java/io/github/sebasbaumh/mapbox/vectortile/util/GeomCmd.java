@@ -14,15 +14,15 @@ public enum GeomCmd
     /**
      * Close the path.
      */
-    ClosePath(7, 0),
+    CLOSE_PATH(7, 0),
     /**
      * Create a line to this point.
      */
-    LineTo(2, 2),
+    LINE_TO(2, 2),
     /**
      * Move to point without creating a line.
      */
-    MoveTo(1, 2);
+    MOVE_TO(1, 2);
 //@formatter:on
 
 	/**
@@ -53,13 +53,13 @@ public enum GeomCmd
 		switch (cmdId)
 		{
 			case 1:
-				geomCmd = MoveTo;
+				geomCmd = MOVE_TO;
 				break;
 			case 2:
-				geomCmd = LineTo;
+				geomCmd = LINE_TO;
 				break;
 			case 7:
-				geomCmd = ClosePath;
+				geomCmd = CLOSE_PATH;
 				break;
 			default:
 				geomCmd = null;

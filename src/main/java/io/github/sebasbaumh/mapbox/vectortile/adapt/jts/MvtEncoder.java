@@ -20,6 +20,12 @@ import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public final class MvtEncoder
 {
+	// prevent instantiating this class
+	@Deprecated
+	private MvtEncoder()
+	{
+	}
+
 	/**
 	 * Encode a {@link JtsMvt} to byte[] ready for writing to a file.
 	 * <p>

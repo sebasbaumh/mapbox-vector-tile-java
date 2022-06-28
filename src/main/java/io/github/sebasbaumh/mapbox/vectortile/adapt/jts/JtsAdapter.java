@@ -41,6 +41,12 @@ import io.github.sebasbaumh.mapbox.vectortile.util.Vec2d;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public final class JtsAdapter
 {
+	// prevent instantiating this class
+	@Deprecated
+	private JtsAdapter()
+	{
+	}
+
 	/**
 	 * Adds features for the given geometry to the given layer builder.
 	 * @param layerBuilder layer builder to write to
@@ -378,7 +384,7 @@ public final class JtsAdapter
 		final Vec2d mvtPos = new Vec2d((int) nextCoord.x, (int) nextCoord.y);
 
 		// Encode initial 'MoveTo' command
-		geomCmds.add(MvtUtil.geomCmdHdr(GeomCmd.MoveTo, 1));
+		geomCmds.add(MvtUtil.geomCmdHdr(GeomCmd.MOVE_TO, 1));
 		moveCursor(cursor, geomCmds, mvtPos);
 
 		/** Index of 'LineTo' 'command header' */
@@ -407,7 +413,7 @@ public final class JtsAdapter
 		if (lineToLength >= minLineToLen && lineToLength <= MvtUtil.GEOM_CMD_HDR_LEN_MAX)
 		{
 			// Write 'LineTo' 'command header'
-			geomCmds.set(lineToCmdHdrIndex, MvtUtil.geomCmdHdr(GeomCmd.LineTo, lineToLength));
+			geomCmds.set(lineToCmdHdrIndex, MvtUtil.geomCmdHdr(GeomCmd.LINE_TO, lineToLength));
 			if (closeEnabled)
 			{
 				geomCmds.add(MvtUtil.CLOSE_PATH_HDR);
@@ -490,7 +496,7 @@ public final class JtsAdapter
 		if (moveCmdLen <= MvtUtil.GEOM_CMD_HDR_LEN_MAX)
 		{
 			// Write 'MoveTo' command header to first index
-			geomCmds.set(0, MvtUtil.geomCmdHdr(GeomCmd.MoveTo, moveCmdLen));
+			geomCmds.set(0, MvtUtil.geomCmdHdr(GeomCmd.MOVE_TO, moveCmdLen));
 
 			return geomCmds;
 		}
@@ -571,32 +577,30 @@ public final class JtsAdapter
 				// Add interior rings
 				for (int ringIndex = 0; ringIndex < nextPoly.getNumInteriorRing(); ++ringIndex)
 				{
-
 					final LineString nextInteriorRing = nextPoly.getInteriorRingN(ringIndex);
 
 					// Area must be non-zero
 					final double interiorArea = Area.ofRingSigned(nextInteriorRing.getCoordinates());
-					if (((int) Math.round(interiorArea)) == 0)
+					if (Math.round(interiorArea) != 0)
 					{
-						continue;
-					}
+						// Check CW Winding (must be negative area in original coordinate system, MVT is
+						// positive-y-down, so
+						// inequality is flipped)
+						// See: https://docs.mapbox.com/vector-tiles/specification/#winding-order
+						if (interiorArea < 0d)
+						{
+							CoordinateArrays.reverse(nextInteriorRing.getCoordinates());
+						}
 
-					// Check CW Winding (must be negative area in original coordinate system, MVT is positive-y-down, so
-					// inequality is flipped)
-					// See: https://docs.mapbox.com/vector-tiles/specification/#winding-order
-					if (interiorArea < 0d)
-					{
-						CoordinateArrays.reverse(nextInteriorRing.getCoordinates());
-					}
+						// Interior ring area must be < exterior ring area, or entire geometry is invalid
+						if (Math.abs(exteriorArea) <= Math.abs(interiorArea))
+						{
+							valid = false;
+							break;
+						}
 
-					// Interior ring area must be < exterior ring area, or entire geometry is invalid
-					if (Math.abs(exteriorArea) <= Math.abs(interiorArea))
-					{
-						valid = false;
-						break;
+						nextPolyGeom.addAll(linesToGeomCmds(nextInteriorRing, mvtClosePath, cursor, 2));
 					}
-
-					nextPolyGeom.addAll(linesToGeomCmds(nextInteriorRing, mvtClosePath, cursor, 2));
 				}
 
 				if (valid)

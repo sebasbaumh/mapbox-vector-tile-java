@@ -85,7 +85,9 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 							featureBuilder.setId(Long.parseLong((String) idValue));
 						}
 						catch (NumberFormatException expected)
-						{}
+						{
+							// ignore any non-numbers
+						}
 					}
 				}
 			}

@@ -18,21 +18,32 @@ import org.locationtech.jts.geom.Polygon;
 import io.github.sebasbaumh.mapbox.vectortile.VectorTile;
 import io.github.sebasbaumh.mapbox.vectortile.adapt.jts.JtsAdapter;
 
+/**
+ * Provides feature counts and feature statistics (points and repeated points).
+ */
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public final class JtsGeomStats
 {
+	/**
+	 * Number of features per geometry type.
+	 */
 	public final Map<VectorTile.Tile.GeomType, Integer> featureCounts;
-	public final List<FeatureStats> featureStats;
+	/**
+	 * Statistics for features.
+	 */
+	public final List<FeatureStats> featureStats = new ArrayList<FeatureStats>();
 
+	/**
+	 * Constructs an instance.
+	 */
 	private JtsGeomStats()
 	{
 		final VectorTile.Tile.GeomType[] geomTypes = VectorTile.Tile.GeomType.values();
-		featureCounts = new HashMap<>(geomTypes.length);
+		featureCounts = new HashMap<VectorTile.Tile.GeomType, Integer>(geomTypes.length);
 		for (VectorTile.Tile.GeomType nextGeomType : geomTypes)
 		{
 			featureCounts.put(nextGeomType, 0);
 		}
-		this.featureStats = new ArrayList<>();
 	}
 
 	private static int checkRepeatedPoints2d(LineString lineString)
@@ -147,9 +158,18 @@ public final class JtsGeomStats
 		return "JtsGeomStats{" + "featureCounts=" + featureCounts + ", featureStats=" + featureStats + '}';
 	}
 
+	/**
+	 * Provides information about points and total points in a feature.
+	 */
 	public static final class FeatureStats
 	{
+		/**
+		 * Number of repeated points.
+		 */
 		public int repeatedPts;
+		/**
+		 * Number of total points.
+		 */
 		public int totalPts;
 
 		@Override

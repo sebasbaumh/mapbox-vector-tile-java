@@ -750,8 +750,7 @@ public final class VectorTile {
         return result;
       }
 
-      @SuppressWarnings("unchecked")
-	@java.lang.Override
+      @java.lang.Override
       public int hashCode() {
         if (memoizedHashCode != 0) {
           return memoizedHashCode;

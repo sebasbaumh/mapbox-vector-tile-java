@@ -56,6 +56,12 @@ public final class MvtReader
 	 */
 	private static final RingClassifier RING_CLASSIFIER_DEFAULT = RING_CLASSIFIER_V1;
 
+	// prevent instantiating this class
+	@Deprecated
+	private MvtReader()
+	{
+	}
+
 	/**
 	 * Convenience method for loading MVT from file. See
 	 * {@link #loadMvt(InputStream, GeometryFactory, ITagConverter, RingClassifier)}. Uses {@link #RING_CLASSIFIER_V2_1}
@@ -245,7 +251,7 @@ public final class MvtReader
 			cmd = MvtUtil.getGeomCmd(cmdHdr);
 
 			// Guard: command type and length
-			if (cmd != GeomCmd.MoveTo || cmdLength != 1)
+			if (cmd != GeomCmd.MOVE_TO || cmdLength != 1)
 			{
 				break;
 			}
@@ -265,8 +271,8 @@ public final class MvtReader
 			// Guard: command type and length
 			// Guard: header data length unsupported by geometry command buffer
 			// (require at least (1 value * 2 params) + current_index)
-			if (cmd != GeomCmd.LineTo || cmdLength < 1
-					|| ((cmdLength * GeomCmd.LineTo.getParamCount()) + i > geomCmds.size()))
+			if (cmd != GeomCmd.LINE_TO || cmdLength < 1
+					|| ((cmdLength * GeomCmd.LINE_TO.getParamCount()) + i > geomCmds.size()))
 			{
 				break;
 			}
@@ -322,14 +328,14 @@ public final class MvtReader
 
 		// Guard: command type
 		// Guard: minimum command length
-		if ((cmd != GeomCmd.MoveTo) || (cmdLength < 1))
+		if ((cmd != GeomCmd.MOVE_TO) || (cmdLength < 1))
 		{
 			return null;
 		}
 
 		// Guard: header data unsupported by geometry command buffer
 		// (require header and at least 1 value * 2 params)
-		int requiredgeomCmdsLength = cmdLength * GeomCmd.MoveTo.getParamCount() + 1;
+		int requiredgeomCmdsLength = cmdLength * GeomCmd.MOVE_TO.getParamCount() + 1;
 		if (requiredgeomCmdsLength > geomCmds.size())
 		{
 			return null;
@@ -396,7 +402,7 @@ public final class MvtReader
 			cmd = MvtUtil.getGeomCmd(cmdHdr);
 
 			// Guard: command type and length
-			if (cmd != GeomCmd.MoveTo || cmdLength != 1)
+			if (cmd != GeomCmd.MOVE_TO || cmdLength != 1)
 			{
 				break;
 			}
@@ -416,8 +422,8 @@ public final class MvtReader
 			// Guard: command type and length
 			// Guard: header data length unsupported by geometry command buffer
 			// (require at least (2 values * 2 params) + (current index 'i') + (1 for ClosePath))
-			if (cmd != GeomCmd.LineTo || cmdLength < 2
-					|| ((cmdLength * GeomCmd.LineTo.getParamCount()) + i + 1 > geomCmds.size()))
+			if (cmd != GeomCmd.LINE_TO || cmdLength < 2
+					|| ((cmdLength * GeomCmd.LINE_TO.getParamCount()) + i + 1 > geomCmds.size()))
 			{
 				break;
 			}
@@ -448,7 +454,7 @@ public final class MvtReader
 			cmdLength = MvtUtil.getGeomCmdLength(cmdHdr);
 			cmd = MvtUtil.getGeomCmd(cmdHdr);
 
-			if (cmd != GeomCmd.ClosePath || cmdLength != 1)
+			if (cmd != GeomCmd.CLOSE_PATH || cmdLength != 1)
 			{
 				break;
 			}

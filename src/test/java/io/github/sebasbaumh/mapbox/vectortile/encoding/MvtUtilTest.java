@@ -11,18 +11,20 @@ import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
  * Test MVT utility functions.
  */
 @SuppressWarnings({ "javadoc", "static-method" })
-public final class MvtUtilTest {
+public final class MvtUtilTest
+{
+	@Test
+	public void testHeaders()
+	{
+		assertEquals(9, MvtUtil.geomCmdHdr(GeomCmd.MOVE_TO, 1));
+		assertEquals(1, MvtUtil.geomCmdHdr(GeomCmd.MOVE_TO, 1) >> 3);
 
-    @Test
-    public void testHeaders() {
-        assertEquals(MvtUtil.geomCmdHdr(GeomCmd.MoveTo, 1), 9);
-        assertEquals(MvtUtil.geomCmdHdr(GeomCmd.MoveTo, 1) >> 3, 1);
+		assertEquals(GeomCmd.MOVE_TO.getCmdId(), MvtUtil.getGeomCmdId(MvtUtil.geomCmdHdr(GeomCmd.MOVE_TO, 1)));
+		assertEquals(1, MvtUtil.getGeomCmdLength(MvtUtil.geomCmdHdr(GeomCmd.MOVE_TO, 1)));
 
-        assertEquals(MvtUtil.getGeomCmdId(MvtUtil.geomCmdHdr(GeomCmd.MoveTo, 1)), GeomCmd.MoveTo.getCmdId());
-        assertEquals(MvtUtil.getGeomCmdLength(MvtUtil.geomCmdHdr(GeomCmd.MoveTo, 1)), 1);
-
-        for (GeomCmd c : GeomCmd.values()) {
-            assertEquals(MvtUtil.geomCmdHdr(c, 1) & 0x7, c.getCmdId());
-        }
-    }
+		for (GeomCmd c : GeomCmd.values())
+		{
+			assertEquals(c.getCmdId(), MvtUtil.geomCmdHdr(c, 1) & 0x7);
+		}
+	}
 }

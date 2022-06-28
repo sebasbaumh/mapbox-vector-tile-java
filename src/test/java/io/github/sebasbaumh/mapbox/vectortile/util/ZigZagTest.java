@@ -8,11 +8,12 @@ import org.junit.Test;
  * Test zig zag encoding function.
  */
 @SuppressWarnings({ "javadoc", "static-method" })
-public final class ZigZagTest {
-
-    @Test
-    public void encodeAndDecode() {
-        assertEquals(MvtUtil.decodeZigZag(MvtUtil.encodeZigZag(0)), 0);
-        assertEquals(MvtUtil.decodeZigZag(MvtUtil.encodeZigZag(10018754)), 10018754);
-    }
+public final class ZigZagTest
+{
+	@Test
+	public void encodeAndDecode()
+	{
+		assertEquals(0, MvtUtil.decodeZigZag(MvtUtil.encodeZigZag(0)));
+		assertEquals(10018754, MvtUtil.decodeZigZag(MvtUtil.encodeZigZag(10018754)));
+	}
 }

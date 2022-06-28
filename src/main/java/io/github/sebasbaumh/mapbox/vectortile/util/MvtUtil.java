@@ -20,9 +20,9 @@ import io.github.sebasbaumh.mapbox.vectortile.build.MvtLayerProps;
 public final class MvtUtil
 {
 	/**
-	 * encoded 'command header' integer for {@link GeomCmd#ClosePath}.
+	 * encoded 'command header' integer for {@link GeomCmd#CLOSE_PATH}.
 	 */
-	public static final int CLOSE_PATH_HDR = geomCmdHdr(GeomCmd.ClosePath, 1);
+	public static final int CLOSE_PATH_HDR = geomCmdHdr(GeomCmd.CLOSE_PATH, 1);
 	/**
 	 * Maximum allowed 'command header' length value.
 	 */
