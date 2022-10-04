@@ -19,7 +19,9 @@ This project allows encoding and decoding of MapBox Vector Tiles (MVT).
 * All dependencies were upgraded to their latest version (including JTS)
 * Pull requests from the original source were integrated ([52](https://github.com/wdtinc/mapbox-vector-tile-java/pull/52) and [53](https://github.com/wdtinc/mapbox-vector-tile-java/pull/53))
 * Clean up of the code and optimizations (use null annotations and streamline flow)
-* Support for JDK 11+
+* Support for current JDKs
+  * JDK 11 ([main branch](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/master))
+  * JDK 17 ([unreleased branch](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/jdk17), but already working)
 * The license is still [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ### See also:
