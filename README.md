@@ -11,7 +11,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=sebasbaumh_mapbox-vector-tile-java&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=sebasbaumh_mapbox-vector-tile-java)
 
 This project allows encoding and decoding of MapBox Vector Tiles (MVT).  
-*It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors here for their work.*
+*It is originally based on [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java), which is unfortunately [discontinued](https://github.com/wdtinc/mapbox-vector-tile-java/issues/45#issuecomment-1126996294) and I want to thank its authors for their work.*
 
 ## Project goals and improvements:
 * protoc generated model for Mapbox Vector Tiles v2.1.
