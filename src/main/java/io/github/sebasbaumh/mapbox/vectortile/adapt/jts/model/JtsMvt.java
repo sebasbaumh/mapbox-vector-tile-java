@@ -18,7 +18,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public class JtsMvt
 {
-
 	/**
 	 * Map layers by name.
 	 */

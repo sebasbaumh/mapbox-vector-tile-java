@@ -49,22 +49,17 @@ public enum GeomCmd
 	@Nullable
 	public static GeomCmd fromId(int cmdId)
 	{
-		final GeomCmd geomCmd;
 		switch (cmdId)
 		{
 			case 1:
-				geomCmd = MOVE_TO;
-				break;
+				return MOVE_TO;
 			case 2:
-				geomCmd = LINE_TO;
-				break;
+				return LINE_TO;
 			case 7:
-				geomCmd = CLOSE_PATH;
-				break;
+				return CLOSE_PATH;
 			default:
-				geomCmd = null;
+				return null;
 		}
-		return geomCmd;
 	}
 
 	/**

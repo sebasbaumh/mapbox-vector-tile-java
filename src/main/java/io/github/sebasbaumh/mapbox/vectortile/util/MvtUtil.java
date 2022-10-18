@@ -159,7 +159,7 @@ public final class MvtUtil
 		VectorTile.Tile.Layer.Builder layerBuilder = VectorTile.Tile.Layer.newBuilder();
 		layerBuilder.setVersion(2);
 		layerBuilder.setName(layerName);
-		layerBuilder.setExtent(mvtLayerParams.extent);
+		layerBuilder.setExtent(mvtLayerParams.getExtent());
 		return layerBuilder;
 	}
 
@@ -230,7 +230,6 @@ public final class MvtUtil
 		else if (value.hasSintValue())
 		{
 			return value.getSintValue();
-
 		}
 		else if (value.hasUintValue())
 		{

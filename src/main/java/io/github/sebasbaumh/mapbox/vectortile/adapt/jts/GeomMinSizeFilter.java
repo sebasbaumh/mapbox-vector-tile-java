@@ -46,13 +46,13 @@ public final class GeomMinSizeFilter implements IGeometryFilter
 	@Override
 	public boolean accept(Geometry geometry)
 	{
-		if ((geometry instanceof Polygon || geometry instanceof MultiPolygon) && geometry.getArea() < minArea)
+		if ((geometry instanceof Polygon || geometry instanceof MultiPolygon) && (geometry.getArea() < minArea))
 		{
 			return false;
 
 		}
 		else if ((geometry instanceof LineString || geometry instanceof MultiLineString)
-				&& geometry.getLength() < minLength)
+				&& (geometry.getLength() < minLength))
 		{
 			return false;
 		}

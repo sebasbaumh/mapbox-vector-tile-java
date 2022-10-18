@@ -10,68 +10,94 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 public class MvtLayerParams
 {
 	/**
-	 * Default layer parameters created using {@link #MvtLayerParams()}.
+	 * Default resolution of the MVT local coordinate system (4096).
 	 */
-	public static final MvtLayerParams DEFAULT = new MvtLayerParams();
-
+	public static final int DEFAULT_EXTENT = 4096;
 	/**
-	 * the resolution of the MVT local coordinate system.
-	 */
-	public final int extent;
-
-	/**
-	 * ratio of tile 'pixel' dimensions to tile extent dimensions.
-	 */
-	public final float ratio;
-
-	/**
-	 * the resolution of the tile in 'pixel' dimensions.
-	 */
-	public final int tileSize;
-
-	/**
-	 * Construct default layer sizing parameters for MVT creation.
+	 * Default layer parameters..
 	 * <p>
 	 * Uses defaults:
 	 * </p>
 	 * <ul>
-	 * <li>{@link #tileSize} = 256</li>
-	 * <li>{@link #extent} = 4096</li>
+	 * <li>{@link #getExtent()} = 4096</li>
 	 * </ul>
-	 * @see #MvtLayerParams(int, int)
 	 */
+	public static final MvtLayerParams DEFAULT = new MvtLayerParams(DEFAULT_EXTENT);
+	/**
+	 * the resolution of the MVT local coordinate system.
+	 */
+	private final int extent;
+
+	/**
+	 * Construct default layer sizing parameters for MVT creation.
+	 * @deprecated use {@link #DEFAULT} instead
+	 */
+	@Deprecated
 	public MvtLayerParams()
 	{
-		this(256, 4096);
+		this(DEFAULT_EXTENT);
 	}
 
 	/**
 	 * Construct layer sizing parameters for MVT creation.
-	 * @param tileSize the resolution of the tile in pixel coordinates, must be &gt; 0
 	 * @param extent the resolution of the MVT local coordinate system, must be &gt; 0
 	 */
-	public MvtLayerParams(int tileSize, int extent)
+	public MvtLayerParams(int extent)
 	{
-		if (tileSize <= 0)
-		{
-			throw new IllegalArgumentException("tileSize must be > 0");
-		}
-
 		if (extent <= 0)
 		{
 			throw new IllegalArgumentException("extent must be > 0");
 		}
-
-		this.tileSize = tileSize;
 		this.extent = extent;
-		this.ratio = extent / (float) tileSize;
+	}
+
+	/**
+	 * Construct layer sizing parameters for MVT creation.
+	 * @param tileSize (unused)
+	 * @param extent the resolution of the MVT local coordinate system, must be &gt; 0
+	 * @deprecated tileSize is fixed to 256, use {@link #MvtLayerParams(int)} instead
+	 */
+	@Deprecated
+	public MvtLayerParams(@SuppressWarnings("unused") int tileSize, int extent)
+	{
+		this(extent);
+	}
+
+	/**
+	 * Gets the resolution of the MVT local coordinate system.
+	 * @return the resolution of the MVT local coordinate system.
+	 */
+	public int getExtent()
+	{
+		return extent;
+	}
+
+	/**
+	 * Gets the ratio of tile 'pixel' dimensions to tile extent dimensions.
+	 * @return ratio of tile 'pixel' dimensions to tile extent dimensions.
+	 */
+	public double getRatio()
+	{
+		// tile size is fixed 256 pixels
+		return extent / 256.0;
+	}
+
+	/**
+	 * Gets the resolution of the tile in pixel coordinates
+	 * @return the resolution of the tile in pixel coordinates
+	 */
+	@SuppressWarnings("static-method")
+	public int getTileSize()
+	{
+		// tile size is fixed 256 pixels
+		return 256;
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.getClass().getSimpleName() + " [tileSize=" + tileSize + ", extent=" + extent + ", ratio=" + ratio
-				+ "]";
+		return this.getClass().getSimpleName() + " [tileSize=" + getTileSize() + ", extent=" + getExtent() + ", ratio="
+				+ getRatio() + "]";
 	}
 
 }

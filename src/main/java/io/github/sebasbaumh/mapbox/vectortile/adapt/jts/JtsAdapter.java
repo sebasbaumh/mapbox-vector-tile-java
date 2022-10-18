@@ -3,7 +3,6 @@ package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -214,9 +213,9 @@ public final class JtsAdapter
 		// Transform Setup: Shift to 0 as minimum value
 		t.translate(xOffset, yOffset);
 		// Transform Setup: Scale X and Y to tile extent values, flip Y values
-		t.scale(1d / (xDiff / mvtLayerParams.extent), -1d / (yDiff / mvtLayerParams.extent));
+		t.scale(1d / (xDiff / mvtLayerParams.getExtent()), -1d / (yDiff / mvtLayerParams.getExtent()));
 		// Transform Setup: Bump Y values to positive quadrant
-		t.translate(0d, mvtLayerParams.extent);
+		t.translate(0d, mvtLayerParams.getExtent());
 
 		// The area contained in BOTH the 'original geometry', g, AND the 'clip envelope geometry' is the 'tile
 		// geometry'
@@ -627,102 +626,6 @@ public final class JtsAdapter
 			}
 		}
 		return featureBuilder.build();
-	}
-
-	/**
-	 * <p>
-	 * Convert a flat list of JTS {@link Geometry} to a list of vector tile features. The Geometry should be in MVT
-	 * coordinates.
-	 * </p>
-	 * <p>
-	 * Each geometry will have its own ID.
-	 * </p>
-	 * @param geometries list of JTS geometry (in MVT coordinates) to convert
-	 * @param layerProps layer properties for tagging features
-	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags (can be null for no
-	 *            converter)
-	 * @return features
-	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
-	 * @see #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry, MvtLayerProps,
-	 *      IUserDataConverter)
-	 * @deprecated use #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry,
-	 *             MvtLayerProps, IUserDataConverter) instead
-	 */
-	@Deprecated
-	public static Collection<VectorTile.Tile.Feature> toFeatures(Collection<Geometry> geometries,
-			MvtLayerProps layerProps, @Nullable IUserDataConverter userDataConverter)
-	{
-		// check if there is a geometry at all
-		Iterator<Geometry> it = geometries.iterator();
-		if (!it.hasNext())
-		{
-			return Collections.emptyList();
-		}
-		Geometry geomFirst = it.next();
-		// check if there is only a single geometry (and no complex collection)
-		if (!it.hasNext() && !(geomFirst instanceof GeometryCollection))
-		{
-			VectorTile.Tile.Feature nextFeature = toFeature(geomFirst, layerProps, userDataConverter);
-			if (nextFeature != null)
-			{
-				return Collections.singleton(nextFeature);
-			}
-			else
-			{
-				return Collections.emptyList();
-			}
-		}
-		// ensure to build a list of the correct size as there may be a large number of geometries
-		ArrayList<VectorTile.Tile.Feature> features = new ArrayList<VectorTile.Tile.Feature>(
-				((Collection<?>) geometries).size());
-		for (Geometry nextGeom : geometries)
-		{
-			VectorTile.Tile.Feature nextFeature = toFeature(nextGeom, layerProps, userDataConverter);
-			if (nextFeature != null)
-			{
-				features.add(nextFeature);
-			}
-		}
-		return features;
-	}
-
-	/**
-	 * <p>
-	 * Convert JTS {@link Geometry} to a list of vector tile features. The Geometry should be in MVT coordinates.
-	 * </p>
-	 * <p>
-	 * Each geometry will have its own ID.
-	 * </p>
-	 * @param geometry JTS geometry to convert
-	 * @param layerProps layer properties for tagging features
-	 * @param userDataConverter convert {@link Geometry#getUserData()} to MVT feature tags (can be null for no
-	 *            converter)
-	 * @return features
-	 * @see #createTileGeom(Geometry, Envelope, GeometryFactory, MvtLayerParams, IGeometryFilter)
-	 * @see #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry, MvtLayerProps,
-	 *      IUserDataConverter)
-	 * @deprecated use #addFeatures(io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.Builder, Geometry,
-	 *             MvtLayerProps, IUserDataConverter) instead
-	 */
-	@Deprecated
-	public static Collection<VectorTile.Tile.Feature> toFeatures(Geometry geometry, MvtLayerProps layerProps,
-			@Nullable IUserDataConverter userDataConverter)
-	{
-		// short cut
-		if (!(geometry instanceof GeometryCollection))
-		{
-			VectorTile.Tile.Feature nextFeature = toFeature(geometry, layerProps, userDataConverter);
-			if (nextFeature != null)
-			{
-				return Collections.singleton(nextFeature);
-			}
-			else
-			{
-				return Collections.emptyList();
-			}
-		}
-		// use implementation for multiple features and collect flat geometries upfront
-		return toFeatures(collectFlatGeometries(geometry), layerProps, userDataConverter);
 	}
 
 	/**

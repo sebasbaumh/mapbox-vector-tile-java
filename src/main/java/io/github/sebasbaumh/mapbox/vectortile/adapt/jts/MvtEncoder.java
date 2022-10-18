@@ -3,6 +3,8 @@ package io.github.sebasbaumh.mapbox.vectortile.adapt.jts;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jdt.annotation.DefaultLocation;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.locationtech.jts.geom.Geometry;
@@ -44,10 +46,12 @@ public final class MvtEncoder
 	 * Encode a {@link JtsMvt} to byte[] ready for writing to a file.
 	 * @param mvt input to encode to bytes
 	 * @param mvtLayerParams tile creation parameters
-	 * @param userDataConverter converts {@link Geometry#getUserData()} to MVT feature tags
+	 * @param userDataConverter converts {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
 	 * @return bytes ready for writing to a .mvt
 	 */
-	public static byte[] encode(JtsMvt mvt, MvtLayerParams mvtLayerParams, IUserDataConverter userDataConverter)
+	public static byte[] encode(JtsMvt mvt, MvtLayerParams mvtLayerParams,
+			@Nullable IUserDataConverter userDataConverter)
 	{
 		return encodeToTile(mvt, mvtLayerParams, userDataConverter).toByteArray();
 	}
@@ -57,11 +61,12 @@ public final class MvtEncoder
 	 * @param out {@link OutputStream}
 	 * @param mvt input to encode to bytes
 	 * @param mvtLayerParams tile creation parameters
-	 * @param userDataConverter converts {@link Geometry#getUserData()} to MVT feature tags
+	 * @param userDataConverter converts {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
 	 * @throws IOException
 	 */
 	public static void encodeTo(OutputStream out, JtsMvt mvt, MvtLayerParams mvtLayerParams,
-			IUserDataConverter userDataConverter) throws IOException
+			@Nullable IUserDataConverter userDataConverter) throws IOException
 	{
 		encodeToTile(mvt, mvtLayerParams, userDataConverter).writeTo(out);
 	}
@@ -70,11 +75,12 @@ public final class MvtEncoder
 	 * Encode a {@link JtsMvt} to byte[] ready for writing to a file.
 	 * @param mvt input to encode to bytes
 	 * @param mvtLayerParams tile creation parameters
-	 * @param userDataConverter converts {@link Geometry#getUserData()} to MVT feature tags
+	 * @param userDataConverter converts {@link Geometry#getUserData()} to MVT feature tags (can be null for no
+	 *            converter)
 	 * @return {@link io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile}
 	 */
 	public static VectorTile.Tile encodeToTile(JtsMvt mvt, MvtLayerParams mvtLayerParams,
-			IUserDataConverter userDataConverter)
+			@Nullable IUserDataConverter userDataConverter)
 	{
 		// Build MVT containing all layers
 		VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();

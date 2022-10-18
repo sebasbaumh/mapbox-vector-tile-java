@@ -24,7 +24,6 @@ import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 @NonNullByDefault({ DefaultLocation.PARAMETER, DefaultLocation.RETURN_TYPE })
 public class JtsLayer
 {
-
 	private final int extent;
 	private final Collection<Geometry> geometries;
 	private final String name;
@@ -36,7 +35,7 @@ public class JtsLayer
 	 */
 	public JtsLayer(String name)
 	{
-		this(name, new ArrayList<Geometry>(0), MvtLayerParams.DEFAULT.extent);
+		this(name, new ArrayList<Geometry>(0), MvtLayerParams.DEFAULT_EXTENT);
 	}
 
 	/**
@@ -47,7 +46,7 @@ public class JtsLayer
 	 */
 	public JtsLayer(String name, Collection<Geometry> geometries)
 	{
-		this(name, geometries, MvtLayerParams.DEFAULT.extent);
+		this(name, geometries, MvtLayerParams.DEFAULT_EXTENT);
 	}
 
 	/**
@@ -77,7 +76,7 @@ public class JtsLayer
 	 */
 	public JtsLayer(String name, Geometry geom)
 	{
-		this(name, Collections.singleton(geom), MvtLayerParams.DEFAULT.extent);
+		this(name, Collections.singleton(geom), MvtLayerParams.DEFAULT_EXTENT);
 	}
 
 	@Override

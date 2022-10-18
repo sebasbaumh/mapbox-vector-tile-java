@@ -40,14 +40,14 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
-	<version>22.2.1</version>
+	<version>22.3.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.2.1'
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.3.0'
 ```
 
 ## Overview
@@ -58,7 +58,7 @@ The version reflects the year of the release, e.g. `22.0.0` is a version release
 
 The API differs a bit from [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) with the main point being a different namespace (`io.github.sebasbaumh.mapbox.vectortile`) as publishing a project to Maven Central requires to own that namespace.
 
-Especially [`JtsAdapter`](https://github.com/sebasbaumh/mapbox-vector-tile-java/blob/main/src/main/java/io/github/sebasbaumh/mapbox/vectortile/adapt/jts/JtsAdapter.java) has been reworked and optimized. Usually you can just move from `addAllFeatures`/`toFeatures` to `addFeatures` instead.
+Especially [`JtsAdapter`](https://github.com/sebasbaumh/mapbox-vector-tile-java/blob/main/src/main/java/io/github/sebasbaumh/mapbox/vectortile/adapt/jts/JtsAdapter.java) has been reworked and optimized. Usually you will have to move from `addAllFeatures`/`toFeatures` to `addFeatures` instead.
 
 There are also some changes in the class structure, so make sure check your existing code for errors or deprecation warnings. For converters and filters it is now possible to use `null` values to use none/ignore them.
 
@@ -71,7 +71,7 @@ Example for encoding a JTS geometry to a vector tile as `byte[]`:
 // prepare helper classes
 GeometryFactory geomFactory = new GeometryFactory();
 MvtLayerProps mvtLayerProps = new MvtLayerProps();
-MvtLayerParams mvtLayerParams = new MvtLayerParams();
+MvtLayerParams mvtLayerParams = MvtLayerParams.DEFAULT;
 VectorTile.Tile.Layer.Builder mvtLayerBuilder = MvtUtil.newLayerBuilder("test", mvtLayerParams);
 
 // build tile envelope - 1 quadrant of the world
@@ -83,7 +83,7 @@ org.locationtech.jts.geom.Point point = geomFactory.createPoint(new Coordinate(1
 org.locationtech.jts.geom.Geometry tileGeom = JtsAdapter.createTileGeom(
         point, tileEnvelope, geomFactory, mvtLayerParams, null);
 // add it to the layer builder
-mvtLayerBuilder.addAllFeatures(JtsAdapter.toFeatures(tileGeom, mvtLayerProps, null));
+mvtLayerBuilder.addAllFeatures(JtsAdapter.addFeatures(tileGeom, mvtLayerProps, null));
 
 // finish writing of features
 MvtUtil.writeProps(mvtLayerBuilder, mvtLayerProps);

@@ -29,6 +29,7 @@ public class TagKeyValueMapConverter implements ITagConverter
 	/**
 	 * The {@link Map} key for the feature id.
 	 */
+	@Nullable
 	private final String idKey;
 
 	/**
@@ -75,12 +76,12 @@ public class TagKeyValueMapConverter implements ITagConverter
 			List<VectorTile.Tile.Value> valuesList)
 	{
 		// Guard: empty
-		if (nullIfEmpty && tags.size() < 1 && (!addId || id == null))
+		if (nullIfEmpty && tags.isEmpty() && (!addId || id == null))
 		{
 			return null;
 		}
 
-		final Map<String, Object> userData = new LinkedHashMap<>(((tags.size() + 1) / 2));
+		final Map<String, Object> userData = new LinkedHashMap<String, Object>(((tags.size() + 1) / 2));
 		// Add feature properties
 		int keyIndex;
 		int valIndex;
