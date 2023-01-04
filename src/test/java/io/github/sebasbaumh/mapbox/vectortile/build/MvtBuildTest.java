@@ -45,7 +45,7 @@ import io.github.sebasbaumh.mapbox.vectortile.util.MvtUtil;
 public final class MvtBuildTest
 {
 	/**
-	 * Do not filter tile geometry.
+	 * Do not filter tile geometry (could be just null as well).
 	 */
 	private static final IGeometryFilter ACCEPT_ALL_FILTER = geometry -> true;
 

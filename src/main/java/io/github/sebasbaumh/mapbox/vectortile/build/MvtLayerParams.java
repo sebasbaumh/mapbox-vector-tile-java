@@ -52,18 +52,6 @@ public class MvtLayerParams
 	}
 
 	/**
-	 * Construct layer sizing parameters for MVT creation.
-	 * @param tileSize (unused)
-	 * @param extent the resolution of the MVT local coordinate system, must be &gt; 0
-	 * @deprecated tileSize is fixed to 256, use {@link #MvtLayerParams(int)} instead
-	 */
-	@Deprecated
-	public MvtLayerParams(@SuppressWarnings("unused") int tileSize, int extent)
-	{
-		this(extent);
-	}
-
-	/**
 	 * Gets the resolution of the MVT local coordinate system.
 	 * @return the resolution of the MVT local coordinate system.
 	 */

@@ -51,7 +51,8 @@ public final class JtsGeomStats
 		int repeatedPoints = 0;
 
 		final CoordinateSequence coordSeq = lineString.getCoordinateSequence();
-		Coordinate nextCoord = null, prevCoord;
+		Coordinate nextCoord = null;
+		Coordinate prevCoord;
 		for (int i = 0; i < coordSeq.size(); ++i)
 		{
 			prevCoord = nextCoord;

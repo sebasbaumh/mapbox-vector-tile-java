@@ -40,19 +40,19 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
-	<version>22.3.0</version>
+	<version>23.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.github.sebasbaumh:mapbox-vector-tile-java:22.3.0'
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:23.0.0'
 ```
 
 ## Overview
 
-The version reflects the year of the release, e.g. `22.0.0` is a version released in 2022.
+The version reflects the year of the release, e.g. `23.0.0` is a version released in 2023.
 
 ### Changes from to the original [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java)
 
@@ -92,19 +92,6 @@ mvtBuilder.addLayers(mvtLayerBuilder.build());
 // build the vector tile (here as byte array)
 byte[] mvtData = mvtBuilder.build().toByteArray();
 ```
-
----
-*The following content is based on the original code in [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java) and may not be fully up to date. It will be reworked step by step.*
-
-Contents
-
-- [Overview](#overview)
-    - [Reading MVTs](#reading-mvts)
-    - [Building and Writing MVTs](#building-and-writing-mvts)
-    - [Buffering Polygons Beyond MVT Extent](#buffering-polygons-beyond-mvt-extent)
-- [Examples](#examples)
-- [Generate VectorTile class using .proto](#how-to-generate-vectortile-class-using-vector_tile.proto)
-- [Known Issues](#known-issues)
 
 ## Overview
 
@@ -155,10 +142,7 @@ to be in the global/world units for your target projection. Example: meters for 
 
 Create tiled JTS geometry with JtsAdapter#createTileGeom(). MVTs currently
 do not support feature collections so any JTS geometry collections will be flattened
-to a single level. A TileGeomResult will contain the world/global intersection
-geometry from clipping as well as the actual MVT geometry that uses
-tile extent coordinates. The intersection geometry can be used for hierarchical
-processing, while the extent geometry is intended to be encoded as the tile geometry.
+to a single level.
 Keep in mind that MVTs use local 'screen coordinates' with inverted y-axis compared with cartesian.
 
 ```java
@@ -166,39 +150,13 @@ IGeometryFilter acceptAllGeomFilter = geometry -> true;
 Envelope tileEnvelope = new Envelope(0d, 100d, 0d, 100d); // TODO: Your tile extent here
 MvtLayerParams layerParams = new MvtLayerParams(); // Default extent
 
-TileGeomResult tileGeom = JtsAdapter.createTileGeom(
+Geometry tileGeom = JtsAdapter.createTileGeom(
         jtsGeom, // Your geometry
         tileEnvelope,
         geomFactory,
         layerParams,
         acceptAllGeomFilter);
 ```
-
-JavaDoc for JtsAdapter.createTileGeom()
-
-```java
-/**
- * Create geometry clipped and then converted to MVT 'extent' coordinates. Result
- * contains both clipped geometry (intersection) and transformed geometry for encoding to MVT.
- *
- * <p>Uses the same tile and clipping coordinates. May cause rendering issues on boundaries for polygons
- * or line geometry depending on styling.</p>
- *
- * @param g original 'source' geometry
- * @param tileEnvelope world coordinate bounds for tile
- * @param geomFactory creates a geometry for the tile envelope
- * @param mvtLayerParams specifies vector tile properties
- * @param filter geometry values that fail filter after transforms are removed
- * @return tile geometry result
- * @see TileGeomResult
- */
-public static TileGeomResult createTileGeom(Geometry g,
-                                            Envelope tileEnvelope,
-                                            GeometryFactory geomFactory,
-                                            MvtLayerParams mvtLayerParams,
-                                            IGeometryFilter filter)
-```
-
 
 #### 3) Create MVT Builder, Layers, and Features
 
@@ -213,10 +171,10 @@ byte array. This is the top-level object for writing the MVT:
 VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();
 ```
 
-Create an empty layer for the MVT using the MvtLayerBuild#newLayerBuilder() utility function:
+Create an empty layer for the MVT using the MvtUtil#newLayerBuilder() utility function:
 
 ```java
-VectorTile.Tile.Layer.Builder layerBuilder = MvtLayerBuild.newLayerBuilder("myLayerName", layerParams);
+VectorTile.Tile.Layer.Builder layerBuilder = MvtUtil.newLayerBuilder("myLayerName", layerParams);
 ```
 
 MVT JTS Geometry from step 2 need to be converted to MVT features.
@@ -228,14 +186,14 @@ user data (preserved during MVT tile geometry conversion) and convert it to MVT 
 ```java
 MvtLayerProps layerProps = new MvtLayerProps();
 IUserDataConverter userDataConverter = new UserDataKeyValueMapConverter();
-List<VectorTile.Tile.Feature> features = JtsAdapter.toFeatures(tileGeom.mvtGeoms, layerProps, userDataConverter);
+List<VectorTile.Tile.Feature> features = JtsAdapter.addFeatures(layerBuilder, tileGeom, layerProps, userDataConverter);
 ```
 
-Use MvtLayerBuild#writeProps() utility function after JtsAdapter#toFeatures() to add the key/value dictionary to the
+Use MvtUtil#writeProps() utility function after JtsAdapter#addFeatures() to add the key/value dictionary to the
 MVT layer:
 
 ```java
-MvtLayerBuild.writeProps(layerBuilder, layerProps);
+MvtUtil.writeProps(layerBuilder, layerProps);
 ```
 
 #### 4) Write MVT
@@ -275,9 +233,8 @@ clipEnvelope.expandBy(bufferWidth, bufferHeight);
 
 // Build buffered MVT tile geometry
 final TileGeomResult bufferedTileGeom = JtsAdapter.createTileGeom(
-        JtsAdapter.flatFeatureList(inputGeom),
-        tileEnvelope, clipEnvelope, geomFactory,
-        DEFAULT_MVT_PARAMS, ACCEPT_ALL_FILTER);
+        inputGeom, tileEnvelope, clipEnvelope, geomFactory,
+        DEFAULT_MVT_PARAMS, null);
 
 // Create MVT layer
 final VectorTile.Tile mvt = encodeMvt(DEFAULT_MVT_PARAMS, bufferedTileGeom);
