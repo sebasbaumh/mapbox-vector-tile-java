@@ -1,7 +1,7 @@
 package io.github.sebasbaumh.mapbox.vectortile.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,8 @@ public final class JtsGeomStats
 	/**
 	 * Number of features per geometry type.
 	 */
-	public final Map<VectorTile.Tile.GeomType, Integer> featureCounts;
+	public final Map<VectorTile.Tile.GeomType, Integer> featureCounts = new EnumMap<VectorTile.Tile.GeomType, Integer>(
+			VectorTile.Tile.GeomType.class);
 	/**
 	 * Statistics for features.
 	 */
@@ -38,9 +39,7 @@ public final class JtsGeomStats
 	 */
 	private JtsGeomStats()
 	{
-		final VectorTile.Tile.GeomType[] geomTypes = VectorTile.Tile.GeomType.values();
-		featureCounts = new HashMap<VectorTile.Tile.GeomType, Integer>(geomTypes.length);
-		for (VectorTile.Tile.GeomType nextGeomType : geomTypes)
+		for (VectorTile.Tile.GeomType nextGeomType : VectorTile.Tile.GeomType.values())
 		{
 			featureCounts.put(nextGeomType, 0);
 		}

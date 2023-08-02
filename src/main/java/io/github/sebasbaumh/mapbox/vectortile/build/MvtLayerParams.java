@@ -29,16 +29,6 @@ public class MvtLayerParams
 	private final int extent;
 
 	/**
-	 * Construct default layer sizing parameters for MVT creation.
-	 * @deprecated use {@link #DEFAULT} instead
-	 */
-	@Deprecated
-	public MvtLayerParams()
-	{
-		this(DEFAULT_EXTENT);
-	}
-
-	/**
 	 * Construct layer sizing parameters for MVT creation.
 	 * @param extent the resolution of the MVT local coordinate system, must be &gt; 0
 	 */
