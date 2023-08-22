@@ -78,11 +78,11 @@ public class UserDataKeyValueMapConverter implements IUserDataConverter
 					{
 						featureBuilder.setId((long) idValue);
 					}
-					else if (idValue instanceof String)
+					else if (idValue instanceof String sValue)
 					{
 						try
 						{
-							featureBuilder.setId(Long.parseLong((String) idValue));
+							featureBuilder.setId(Long.parseLong(sValue));
 						}
 						catch (NumberFormatException expected)
 						{

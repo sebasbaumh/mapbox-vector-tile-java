@@ -172,29 +172,29 @@ public final class MvtUtil
 	{
 		final VectorTile.Tile.Value.Builder tileValue = VectorTile.Tile.Value.newBuilder();
 
-		if (value instanceof Boolean)
+		if (value instanceof Boolean v)
 		{
-			tileValue.setBoolValue((Boolean) value);
+			tileValue.setBoolValue(v);
 		}
-		else if (value instanceof Integer)
+		else if (value instanceof Integer v)
 		{
-			tileValue.setSintValue((Integer) value);
+			tileValue.setSintValue(v);
 		}
-		else if (value instanceof Long)
+		else if (value instanceof Long v)
 		{
-			tileValue.setSintValue((Long) value);
+			tileValue.setSintValue(v);
 		}
-		else if (value instanceof Float)
+		else if (value instanceof Float v)
 		{
-			tileValue.setFloatValue((Float) value);
+			tileValue.setFloatValue(v);
 		}
-		else if (value instanceof Double)
+		else if (value instanceof Double v)
 		{
-			tileValue.setDoubleValue((Double) value);
+			tileValue.setDoubleValue(v);
 		}
-		else if (value instanceof String)
+		else if (value instanceof String v)
 		{
-			tileValue.setStringValue((String) value);
+			tileValue.setStringValue(v);
 		}
 		return tileValue.build();
 	}

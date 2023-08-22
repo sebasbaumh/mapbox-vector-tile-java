@@ -369,8 +369,8 @@ public final class VectorTile {
       @java.lang.Override
       public java.lang.String getStringValue() {
         java.lang.Object ref = stringValue_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
+        if (ref instanceof java.lang.String sr) {
+          return sr;
         } else {
           com.google.protobuf.ByteString bs = 
               (com.google.protobuf.ByteString) ref;
@@ -393,10 +393,10 @@ public final class VectorTile {
       public com.google.protobuf.ByteString
           getStringValueBytes() {
         java.lang.Object ref = stringValue_;
-        if (ref instanceof java.lang.String) {
+        if (ref instanceof java.lang.String rs) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  rs);
           stringValue_ = b;
           return b;
         } else {
@@ -790,8 +790,7 @@ public final class VectorTile {
       @java.lang.Override
       protected Builder newBuilderForType(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
+        return new Builder(parent);
       }
       /**
        * <pre>
@@ -907,8 +906,8 @@ public final class VectorTile {
 
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value) {
-            return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value)other);
+          if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value value) {
+            return mergeFrom(value);
           } else {
             super.mergeFrom(other);
             return this;
@@ -1010,14 +1009,14 @@ public final class VectorTile {
                     done = true; // was an endgroup tag
                   }
                   break;
-                } // default:
-              } // switch (tag)
-            } // while (!done)
+                }
+              }
+            }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
             throw e.unwrapIOException();
           } finally {
             onChanged();
-          } // finally
+          }
           return this;
         }
         private int bitField0_;
@@ -1046,7 +1045,7 @@ public final class VectorTile {
         @Override
 		public java.lang.String getStringValue() {
           java.lang.Object ref = stringValue_;
-          if (!(ref instanceof java.lang.String)) {
+          if (!(ref instanceof java.lang.String s)) {
             com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
@@ -1055,7 +1054,7 @@ public final class VectorTile {
             }
             return s;
           } else {
-            return (java.lang.String) ref;
+            return s;
           }
         }
         /**
@@ -1070,10 +1069,10 @@ public final class VectorTile {
 		public com.google.protobuf.ByteString
             getStringValueBytes() {
           java.lang.Object ref = stringValue_;
-          if (ref instanceof String) {
+          if (ref instanceof String rs) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
+                    rs);
             stringValue_ = b;
             return b;
           } else {
@@ -1743,7 +1742,7 @@ public final class VectorTile {
         if (((bitField0_ & 0x00000001) != 0)) {
           output.writeUInt64(1, id_);
         }
-        if (getTagsList().size() > 0) {
+        if (!getTagsList().isEmpty()) {
           output.writeUInt32NoTag(18);
           output.writeUInt32NoTag(tagsMemoizedSerializedSize);
         }
@@ -1753,7 +1752,7 @@ public final class VectorTile {
         if (((bitField0_ & 0x00000002) != 0)) {
           output.writeEnum(3, type_);
         }
-        if (getGeometryList().size() > 0) {
+        if (!getGeometryList().isEmpty()) {
           output.writeUInt32NoTag(34);
           output.writeUInt32NoTag(geometryMemoizedSerializedSize);
         }
@@ -1773,7 +1772,6 @@ public final class VectorTile {
           size += com.google.protobuf.CodedOutputStream
             .computeUInt64Size(1, id_);
         }
-        {
           int dataSize = 0;
           for (int i = 0; i < tags_.size(); i++) {
             dataSize += com.google.protobuf.CodedOutputStream
@@ -1786,13 +1784,11 @@ public final class VectorTile {
                 .computeInt32SizeNoTag(dataSize);
           }
           tagsMemoizedSerializedSize = dataSize;
-        }
         if (((bitField0_ & 0x00000002) != 0)) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(3, type_);
         }
-        {
-          int dataSize = 0;
+          dataSize = 0;
           for (int i = 0; i < geometry_.size(); i++) {
             dataSize += com.google.protobuf.CodedOutputStream
               .computeUInt32SizeNoTag(geometry_.getInt(i));
@@ -1804,7 +1800,6 @@ public final class VectorTile {
                 .computeInt32SizeNoTag(dataSize);
           }
           geometryMemoizedSerializedSize = dataSize;
-        }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
         return size;
@@ -1953,8 +1948,7 @@ public final class VectorTile {
       @java.lang.Override
       protected Builder newBuilderForType(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
+        return new Builder(parent);
       }
       /**
        * <pre>
@@ -2059,8 +2053,8 @@ public final class VectorTile {
 
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature) {
-            return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature)other);
+          if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature f) {
+            return mergeFrom(f);
           } else {
             super.mergeFrom(other);
             return this;
@@ -2901,8 +2895,8 @@ public final class VectorTile {
       @java.lang.Override
       public java.lang.String getName() {
         java.lang.Object ref = name_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
+        if (ref instanceof java.lang.String rs) {
+          return rs;
         } else {
           com.google.protobuf.ByteString bs = 
               (com.google.protobuf.ByteString) ref;
@@ -2921,10 +2915,10 @@ public final class VectorTile {
       public com.google.protobuf.ByteString
           getNameBytes() {
         java.lang.Object ref = name_;
-        if (ref instanceof java.lang.String) {
+        if (ref instanceof java.lang.String rs) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  rs);
           name_ = b;
           return b;
         } else {
@@ -3394,8 +3388,7 @@ public final class VectorTile {
       @java.lang.Override
       protected Builder newBuilderForType(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
+        return new Builder(parent);
       }
       /**
        * <pre>
@@ -3532,8 +3525,8 @@ public final class VectorTile {
 
         @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer) {
-            return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer)other);
+          if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer l) {
+            return mergeFrom(l);
           } else {
             super.mergeFrom(other);
             return this;
@@ -3664,7 +3657,7 @@ public final class VectorTile {
                 case 18: {
                   io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature m =
                       input.readMessage(
-                          io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature.PARSER,
+                          io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Feature.parser(),
                           extensionRegistry);
                   if (featuresBuilder_ == null) {
                     ensureFeaturesIsMutable();
@@ -3683,7 +3676,7 @@ public final class VectorTile {
                 case 34: {
                   io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value m =
                       input.readMessage(
-                          io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value.PARSER,
+                          io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Value.parser(),
                           extensionRegistry);
                   if (valuesBuilder_ == null) {
                     ensureValuesIsMutable();
@@ -3804,7 +3797,7 @@ public final class VectorTile {
         @Override
 		public java.lang.String getName() {
           java.lang.Object ref = name_;
-          if (!(ref instanceof java.lang.String)) {
+          if (!(ref instanceof java.lang.String s)) {
             com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
@@ -3813,7 +3806,7 @@ public final class VectorTile {
             }
             return s;
           } else {
-            return (java.lang.String) ref;
+            return s;
           }
         }
         /**
@@ -3824,10 +3817,10 @@ public final class VectorTile {
 		public com.google.protobuf.ByteString
             getNameBytes() {
           java.lang.Object ref = name_;
-          if (ref instanceof String) {
+          if (ref instanceof String rs) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
+                    rs);
             name_ = b;
             return b;
           } else {
@@ -4990,8 +4983,7 @@ public final class VectorTile {
     @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
+      return new Builder(parent);
     }
     /**
      * Protobuf type {@code vector_tile.Tile}
@@ -5085,8 +5077,8 @@ public final class VectorTile {
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile) {
-          return mergeFrom((io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile)other);
+        if (other instanceof io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile t) {
+          return mergeFrom(t);
         } else {
           super.mergeFrom(other);
           return this;
@@ -5159,7 +5151,7 @@ public final class VectorTile {
               case 26: {
                 io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer m =
                     input.readMessage(
-                        io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.PARSER,
+                        io.github.sebasbaumh.mapbox.vectortile.VectorTile.Tile.Layer.parser(),
                         extensionRegistry);
                 if (layersBuilder_ == null) {
                   ensureLayersIsMutable();
