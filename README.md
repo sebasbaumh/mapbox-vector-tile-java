@@ -250,7 +250,7 @@ If vector_tile.proto is changed in the specification, VectorTile may need to be 
 
 Command `protoc` version should be the same version as the POM.xml dependency.
 
-protoc --java_out=src/main/java src/main/resources/vector_tile.proto
+`protoc --java_out=src/main/java src/main/resources/vector_tile.proto`
 
 #### Extra .proto config
 
