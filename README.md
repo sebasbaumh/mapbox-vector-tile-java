@@ -20,8 +20,10 @@ This project allows encoding and decoding of MapBox Vector Tiles (MVT).
 * Pull requests from the original source were integrated ([52](https://github.com/wdtinc/mapbox-vector-tile-java/pull/52) and [53](https://github.com/wdtinc/mapbox-vector-tile-java/pull/53))
 * Clean up of the code and optimizations (use null annotations and streamline flow)
 * Support for current JDKs
-  * JDK 17 ([main branch](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/main))
-  * JDK 11 ([deprecated branch](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/jdk11))
+  * JDK 21 ([main branch](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/main))
+  * deprecated branches
+    * [JDK 17](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/jdk17)
+    * [JDK 11](https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/jdk11)
 * The license is still [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ### See also:
@@ -40,19 +42,19 @@ There is a Maven artifact in the official Maven repository, so just add this to 
 <dependency>
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
-	<version>23.2.0</version>
+	<version>24.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.github.sebasbaumh:mapbox-vector-tile-java:23.2.0'
+compile 'io.github.sebasbaumh:mapbox-vector-tile-java:24.1.0'
 ```
 
 ## Overview
 
-The version reflects the year of the release, e.g. `23.2.0` is a version released in 2023.
+The version reflects the year of the release, e.g. `24.1.0` is a version released in 2024.
 
 ### Changes from to the original [mapbox-vector-tile-java](https://github.com/wdtinc/mapbox-vector-tile-java)
 
