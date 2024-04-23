@@ -39,7 +39,7 @@ public class JtsMvt
 	{
 
 		// Linked hash map to preserve ordering
-		layersByName = new LinkedHashMap<>(layers.size());
+		layersByName = LinkedHashMap.newLinkedHashMap(layers.size());
 
 		for (JtsLayer nextLayer : layers)
 		{

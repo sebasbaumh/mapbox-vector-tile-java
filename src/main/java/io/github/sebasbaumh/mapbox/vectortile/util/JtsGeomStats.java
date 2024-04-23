@@ -117,7 +117,7 @@ public final class JtsGeomStats
 	private static FeatureStats pointStats(Geometry geom)
 	{
 		final FeatureStats featureStats = new FeatureStats();
-		final HashSet<Point> pointSet = new HashSet<>(geom.getNumPoints());
+		final HashSet<Point> pointSet = HashSet.newHashSet(geom.getNumPoints());
 		featureStats.totalPts = geom.getNumPoints();
 
 		for (int i = 0; i < geom.getNumGeometries(); ++i)

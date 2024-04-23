@@ -5315,14 +5315,14 @@ public final class VectorTile {
                   done = true; // was an endgroup tag
                 }
                 break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
+              }
+            }
+          }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           throw e.unwrapIOException();
         } finally {
           onChanged();
-        } // finally
+        }
         return this;
       }
       private int bitField0_;

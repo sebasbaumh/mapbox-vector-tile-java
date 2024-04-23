@@ -81,7 +81,7 @@ public class TagKeyValueMapConverter implements ITagConverter
 			return null;
 		}
 
-		final Map<String, Object> userData = new LinkedHashMap<String, Object>(((tags.size() + 1) / 2));
+		final Map<String, Object> userData = LinkedHashMap.<String, Object>newLinkedHashMap(((tags.size() + 1) / 2));
 		// Add feature properties
 		int keyIndex;
 		int valIndex;
