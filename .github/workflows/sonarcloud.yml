@@ -15,6 +15,7 @@ jobs:
       with:
         java-version: 21
         distribution: temurin
+        cache: maven
     - name: Analyze with sonarcloud
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sebasbaumh_mapbox-vector-tile-java -Dsonar.organization=sebasbaumh  -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{  secrets.SONAR_TOKEN  }}
       env:
