@@ -180,81 +180,7 @@ public final class MvtBuildTest
 	}
 
 	@Test
-	public void testBufferedPolygon2() throws IOException
-	{
-
-		// Create input geometry
-		final GeometryFactory geomFactory = new GeometryFactory();
-		final Geometry inputGeom = buildPolygon(RANDOM, 200, geomFactory);
-
-		// Build tile envelope - 1 quadrant of the world
-		final double tileWidth = WORLD_SIZE * .5d;
-		final double tileHeight = WORLD_SIZE * .5d;
-		final Envelope tileEnvelope = new Envelope(0d, tileWidth, 0d, tileHeight);
-
-		// Build clip envelope - (10 * 2)% buffered area of the tile envelope
-		final Envelope clipEnvelope = new Envelope(tileEnvelope);
-		final double bufferWidth = tileWidth * .1f;
-		final double bufferHeight = tileHeight * .1f;
-		clipEnvelope.expandBy(bufferWidth, bufferHeight);
-
-		// Build buffered MVT tile geometry
-		Geometry bufferedTileGeom = JtsAdapter.createTileGeom(inputGeom, tileEnvelope, clipEnvelope, geomFactory,
-				MvtLayerParams.DEFAULT, ACCEPT_ALL_FILTER);
-
-		// Create MVT layer
-		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, bufferedTileGeom);
-
-		// MVT Bytes
-		final byte[] bytes = mvt.toByteArray();
-
-		assertNotNull(bytes);
-
-		JtsMvt expected = new JtsMvt(singletonList(new JtsLayer(TEST_LAYER_NAME, bufferedTileGeom)));
-
-		// Load multipolygon z0 tile
-		JtsMvt actual = MvtReader.loadMvt(new ByteArrayInputStream(bytes), new GeometryFactory(),
-				new TagKeyValueMapConverter());
-
-		// Check that MVT geometries are the same as the ones that were encoded above
-		assertEquals(expected, actual);
-	}
-
-	@Test
 	public void testLines() throws IOException
-	{
-
-		// Create input geometry
-		final GeometryFactory geomFactory = new GeometryFactory();
-		final Geometry inputGeom = buildLineString(RANDOM, 10, geomFactory);
-
-		// Build tile envelope - 1 quadrant of the world
-		final Envelope tileEnvelope = new Envelope(0d, WORLD_SIZE * .5d, 0d, WORLD_SIZE * .5d);
-
-		// Build MVT tile geometry
-		Geometry tileGeom = JtsAdapter.createTileGeom(inputGeom, tileEnvelope, geomFactory, MvtLayerParams.DEFAULT,
-				ACCEPT_ALL_FILTER);
-
-		// Create MVT layer
-		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, tileGeom);
-
-		// MVT Bytes
-		final byte[] bytes = mvt.toByteArray();
-
-		assertNotNull(bytes);
-
-		JtsMvt expected = new JtsMvt(singletonList(new JtsLayer(TEST_LAYER_NAME, tileGeom)));
-
-		// Load multipolygon z0 tile
-		JtsMvt actual = MvtReader.loadMvt(new ByteArrayInputStream(bytes), new GeometryFactory(),
-				new TagKeyValueMapConverter());
-
-		// Check that MVT geometries are the same as the ones that were encoded above
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void testLines2() throws IOException
 	{
 
 		// Create input geometry
@@ -319,38 +245,6 @@ public final class MvtBuildTest
 	}
 
 	@Test
-	public void testPoints2() throws IOException
-	{
-
-		// Create input geometry
-		final GeometryFactory geomFactory = new GeometryFactory();
-		final Geometry inputGeom = buildMultiPoint(RANDOM, 200, geomFactory);
-
-		// Build tile envelope - 1 quadrant of the world
-		final Envelope tileEnvelope = new Envelope(0d, WORLD_SIZE * .5d, 0d, WORLD_SIZE * .5d);
-
-		// Build MVT tile geometry
-		Geometry tileGeom = JtsAdapter.createTileGeom(inputGeom, tileEnvelope, geomFactory, MvtLayerParams.DEFAULT,
-				ACCEPT_ALL_FILTER);
-
-		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, tileGeom);
-
-		// MVT Bytes
-		final byte[] bytes = mvt.toByteArray();
-
-		assertNotNull(bytes);
-
-		JtsMvt expected = new JtsMvt(singletonList(new JtsLayer(TEST_LAYER_NAME, tileGeom)));
-
-		// Load multipolygon z0 tile
-		JtsMvt actual = MvtReader.loadMvt(new ByteArrayInputStream(bytes), new GeometryFactory(),
-				new TagKeyValueMapConverter());
-
-		// Check that MVT geometries are the same as the ones that were encoded above
-		assertEquals(expected, actual);
-	}
-
-	@Test
 	public void testPointsInLayers() throws IOException
 	{
 		Point point1 = createPoint();
@@ -382,39 +276,6 @@ public final class MvtBuildTest
 
 	@Test
 	public void testPolygon() throws IOException
-	{
-
-		// Create input geometry
-		final GeometryFactory geomFactory = new GeometryFactory();
-		final Geometry inputGeom = buildPolygon(RANDOM, 200, geomFactory);
-
-		// Build tile envelope - 1 quadrant of the world
-		final Envelope tileEnvelope = new Envelope(0d, WORLD_SIZE * .5d, 0d, WORLD_SIZE * .5d);
-
-		// Build MVT tile geometry
-		Geometry tileGeom = JtsAdapter.createTileGeom(inputGeom, tileEnvelope, geomFactory, MvtLayerParams.DEFAULT,
-				ACCEPT_ALL_FILTER);
-
-		// Create MVT layer
-		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, tileGeom);
-
-		// MVT Bytes
-		final byte[] bytes = mvt.toByteArray();
-
-		assertNotNull(bytes);
-
-		JtsMvt expected = new JtsMvt(singletonList(new JtsLayer(TEST_LAYER_NAME, tileGeom)));
-
-		// Load multipolygon z0 tile
-		JtsMvt actual = MvtReader.loadMvt(new ByteArrayInputStream(bytes), new GeometryFactory(),
-				new TagKeyValueMapConverter());
-
-		// Check that MVT geometries are the same as the ones that were encoded above
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void testPolygon2() throws IOException
 	{
 
 		// Create input geometry
