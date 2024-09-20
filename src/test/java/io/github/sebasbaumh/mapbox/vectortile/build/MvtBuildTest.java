@@ -59,7 +59,7 @@ public final class MvtBuildTest
 	 */
 	private static final Random RANDOM = new Random(487125064L);
 
-	private static String TEST_LAYER_NAME = "layerNameHere";
+	private static final String TEST_LAYER_NAME = "layerNameHere";
 
 	/**
 	 * Example world is 100x100 box.
@@ -104,29 +104,6 @@ public final class MvtBuildTest
 	}
 
 	private static VectorTile.Tile encodeMvt(MvtLayerParams mvtParams, Geometry tileGeom)
-	{
-		// Build MVT
-		final VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();
-
-		// Create MVT layer
-		final VectorTile.Tile.Layer.Builder layerBuilder = MvtUtil.newLayerBuilder(TEST_LAYER_NAME, mvtParams);
-		final MvtLayerProps layerProps = new MvtLayerProps();
-
-		// MVT tile geometry to MVT features
-		JtsAdapter.addFeatures(layerBuilder, tileGeom, layerProps, null);
-		MvtUtil.writeProps(layerBuilder, layerProps);
-
-		// Build MVT layer
-		final VectorTile.Tile.Layer layer = layerBuilder.build();
-
-		// Add built layer to MVT
-		tileBuilder.addLayers(layer);
-
-		/// Build MVT
-		return tileBuilder.build();
-	}
-
-	private static VectorTile.Tile encodeMvt2(MvtLayerParams mvtParams, Geometry tileGeom)
 	{
 		// Build MVT
 		final VectorTile.Tile.Builder tileBuilder = VectorTile.Tile.newBuilder();
@@ -226,7 +203,7 @@ public final class MvtBuildTest
 				MvtLayerParams.DEFAULT, ACCEPT_ALL_FILTER);
 
 		// Create MVT layer
-		final VectorTile.Tile mvt = encodeMvt2(MvtLayerParams.DEFAULT, bufferedTileGeom);
+		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, bufferedTileGeom);
 
 		// MVT Bytes
 		final byte[] bytes = mvt.toByteArray();
@@ -292,7 +269,7 @@ public final class MvtBuildTest
 				ACCEPT_ALL_FILTER);
 
 		// Create MVT layer
-		final VectorTile.Tile mvt = encodeMvt2(MvtLayerParams.DEFAULT, tileGeom);
+		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, tileGeom);
 
 		// MVT Bytes
 		final byte[] bytes = mvt.toByteArray();
@@ -356,7 +333,7 @@ public final class MvtBuildTest
 		Geometry tileGeom = JtsAdapter.createTileGeom(inputGeom, tileEnvelope, geomFactory, MvtLayerParams.DEFAULT,
 				ACCEPT_ALL_FILTER);
 
-		final VectorTile.Tile mvt = encodeMvt2(MvtLayerParams.DEFAULT, tileGeom);
+		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, tileGeom);
 
 		// MVT Bytes
 		final byte[] bytes = mvt.toByteArray();
@@ -452,7 +429,7 @@ public final class MvtBuildTest
 				ACCEPT_ALL_FILTER);
 
 		// Create MVT layer
-		final VectorTile.Tile mvt = encodeMvt2(MvtLayerParams.DEFAULT, tileGeom);
+		final VectorTile.Tile mvt = encodeMvt(MvtLayerParams.DEFAULT, tileGeom);
 
 		// MVT Bytes
 		final byte[] bytes = mvt.toByteArray();
