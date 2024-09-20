@@ -5,7 +5,7 @@
 	<groupId>io.github.sebasbaumh</groupId>
 	<artifactId>mapbox-vector-tile-java</artifactId>
 	<!-- version for release -->
-	<version>24.1.1-SNAPSHOT</version>
+	<version>24.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>Mapbox Vector Tiles - Java</name>
@@ -31,7 +31,7 @@
 		<connection>scm:git:git://github.com/sebasbaumh/mapbox-vector-tile-java.git</connection>
 		<developerConnection>scm:git:ssh://github.com:sebasbaumh/mapbox-vector-tile-java.git</developerConnection>
 		<url>https://github.com/sebasbaumh/mapbox-vector-tile-java/tree/main</url>
-		<tag>v23.2.0</tag>
+		<tag>v24.1.1</tag>
 	</scm>
 	<!-- Sonatype repository -->
 	<distributionManagement>
